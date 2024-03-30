@@ -84,7 +84,7 @@ function ActualizaMasivaPedidos() {
         const uniqueClientes = Array.from(new Set(data.map(pedido => pedido.nombre_cliente)));
         setClientes(uniqueClientes);
       } catch (error) {
-        console.log('Error al obtener los pedidos:', error);
+        console.log('Error al obtener los pedidoss:', error);
       }
     };
 
