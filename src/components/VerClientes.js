@@ -70,7 +70,7 @@ function VerClientes() {
         setLoading(false);
       })
       .catch(error => {
-        console.log('Error al cargar los clientes:', error);
+        console.log('Error al cargar los clientess:', error);
         setLoading(false);
       });
   }, [refreshCount]);
