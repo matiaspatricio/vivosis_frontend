@@ -3,7 +3,7 @@ import axios from 'axios';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import { makeStyles } from '@mui/styles';
-import { Card, Box, Typography, TextField, Paper, Stack, Grid, Autocomplete } from '@mui/material';
+import { Card, Box, Typography, TextField, Paper, Stack, Grid, Autocomplete, CardContent } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Alert from '@mui/material/Alert';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -67,6 +67,21 @@ const useStyles = makeStyles({
   },
 });
 
+const listaLocalidades = [
+  { value: '', label: 'VACIO' },
+  { value: 'AVELLANEDA', label: 'AVELLANEDA' },
+  { value: 'BERAZATEGUI', label: 'BERAZATEGUI' },
+  { value: 'CRUCE VARELA', label: 'CRUCE VARELA' },
+  { value: 'ENVIO CORREO', label: 'ENVIO CORREO' },
+  { value: 'ENVIO MENSAJERIA', label: 'ENVIO MENSAJERIA' },
+  { value: 'EZPELETA', label: 'EZPELETA' },
+  { value: 'LANUS', label: 'LANUS' },
+  { value: 'LOMAS', label: 'LOMAS' },
+  { value: 'QUILMES', label: 'QUILMES' },
+  { value: 'RETIRO EN DOMICILIO', label: 'RETIRO EN DOMICILIO' },
+  { value: 'SOLANO', label: 'SOLANO' },
+  { value: 'VARELA', label: 'VARELA' }
+];
 function EnviosClientes() {
   const classes = useStyles();
   const [pedidos, setPedidos] = useState([]);
@@ -75,6 +90,7 @@ function EnviosClientes() {
   const [searchValue, setSearchValue] = useState('');
   const [copied, setCopied] = useState(false);
   const [mensaje, setMensaje] = useState('');  
+  const [filterLocalidad, setFilterLocalidad] = useState([]);
   
   
 
@@ -84,6 +100,7 @@ function EnviosClientes() {
         const response = await axios.get('https://vivosis.vercel.app/api/pedido/getpedidospendientes');
         const data = response.data;
         setPedidos(data);
+        console.log(pedidos)
         setLoading(false);
       } catch (error) {
         console.log('Error al obtener los pedidos:', error);
@@ -106,17 +123,40 @@ function EnviosClientes() {
     fetchPedidos();
     fetchClientes();
   }, []);
-
-  
-
-  const totalPendiente = pedidos.reduce((total, pedido) => {
-    if (pedido.estado_pago !== 'ABONADO') {
-      return total + (pedido.total || 0);
+  const localidadesData = pedidos.reduce((acc, pedido) => {
+    const { localidad, total, nombre_cliente, estado_pago } = pedido;
+    let grupo;
+    if (['QUILMES', 'EZPELETA', 'BERAZATEGUI'].includes(localidad)) {
+      grupo = 'QUILMES, EZPELETA, BERAZATEGUI';
+    } else if (['SOLANO', 'VARELA', 'CRUCE VARELA'].includes(localidad)) {
+      grupo = 'SOLANO, VARELA, CRUCE VARELA';
+    } else if (['AVELLANEDA', 'LANUS', 'LOMAS'].includes(localidad)) {
+      grupo = 'AVELLANEDA, LANUS, LOMAS';
+    } else if (!localidad || localidad.trim() === '') {
+      grupo = 'Localidad vacía';
+    } else {
+      grupo = 'Otras localidades';
     }
-    return total;
-  }, 0);
-
- 
+    if (!acc[grupo]) {
+      acc[grupo] = {
+        nombre: grupo,
+        cantidadClientes: 0,
+        totalPagar: 0,
+        clientes: [], // Initialize the array
+      };
+    }
+    if (!acc[grupo].clientes.includes(nombre_cliente)) {
+      acc[grupo].clientes.push(nombre_cliente); // Add the client name to the array if it's not already included
+      acc[grupo].cantidadClientes++; // Increment the count of unique clients
+    }
+    if (estado_pago !== 'ABONADO') {
+      acc[grupo].totalPagar += total; // Sum the total to pay if the payment status is not 'ABONADO'
+    
+    }
+    console.log(acc);
+    return acc;
+    
+  }, {});
 
   const handleCopyToClipboard  = async (cliente) => {
     setCopied(true);
@@ -225,12 +265,20 @@ function EnviosClientes() {
 
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
-  };
+  };  
   const filteredPedidosPorCliente = pedidosPorCliente.filter((pedido) =>
   pedido.cliente.toLowerCase().includes(searchValue.toLowerCase())
 );
 
-  const sortedPedidosPorCliente = filteredPedidosPorCliente.sort((a, b) => {
+const handleFilterLocalidadChange = (event, value) => {
+  setFilterLocalidad(value);
+};
+const getOptionLabel = (option) => option.label;
+
+const filteredPedidosPorLocalidad = filterLocalidad.length
+  ? filteredPedidosPorCliente.filter((pedido) => filterLocalidad.some((localidad) => pedido.localidad === localidad.value))
+  : filteredPedidosPorCliente;  
+  const sortedPedidosPorCliente = filteredPedidosPorLocalidad.sort((a, b) => {
     const clienteA = a.cliente.toLowerCase();
     const clienteB = b.cliente.toLowerCase();
     if (clienteA < clienteB) {
@@ -270,6 +318,8 @@ function EnviosClientes() {
     },
   ];
 
+  
+
   return (
     <Box>      
       
@@ -282,7 +332,27 @@ function EnviosClientes() {
             <Typography variant="h4" gutterBottom className={classes.h4}>
             Resumen de Pedidos por Cliente
             </Typography>                        
-          </Stack>          
+          </Stack>  
+          <DataGrid
+            rows={Object.values(localidadesData)}
+            columns={[
+              { field: 'nombre', headerName: 'Localidad', flex: 1 },
+              { field: 'cantidadClientes', headerName: 'Cantidad de Clientes', flex: 1 },
+              { 
+                field: 'totalPagar', 
+                headerName: 'Total a Pagar', 
+                flex: 1,
+                valueFormatter: (params) => {
+                  const formattedTotal = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(params.value);
+                  return formattedTotal;
+                },
+              },
+            ]}
+            getRowId={(row) => row.nombre} // Usa el nombre de la localidad como id
+            disableRowSelectionOnClick
+            density="compact"
+          />
+
         <Grid container className={classes.filtersContainer}>
           <Grid item xs={2} >        
               <TextField
@@ -292,7 +362,20 @@ function EnviosClientes() {
                 value={searchValue}
                 onChange={handleSearchChange}
               />  
-          </Grid>          
+          </Grid>       
+          <Grid item xs={2}>
+              <Autocomplete 
+                size='small'
+                getOptionLabel={getOptionLabel}
+                multiple
+                options={listaLocalidades}
+                value={filterLocalidad}
+                onChange={handleFilterLocalidadChange}
+                renderInput={params => (
+                  <TextField {...params} label="Localidad" variant="outlined" className={classes.filterInput}size='small'  />
+                )}
+              />
+            </Grid>     
         </Grid>  
             <Paper className={classes.roundedGrid}>
             <DataGrid
@@ -302,10 +385,8 @@ function EnviosClientes() {
               disableRowSelectionOnClick
               density="compact"
             />
-            </Paper>     
-                        
-        
-        </Card>
+            </Paper>                                                 
+        </Card>                                            
         
       )}
       <Box style={{ margin: '1rem 0' }} align="center">

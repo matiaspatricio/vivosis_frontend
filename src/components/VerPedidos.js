@@ -533,8 +533,7 @@ function VerPedidos() {
             </Button>
           </Stack>
           <Grid container className={classes.filtersContainer}>
-          <Grid item xs={2} >
-              
+          <Grid item xs={2} >              
               <TextField
                 className={classes.filterInput}
                 size='small'
@@ -548,8 +547,7 @@ function VerPedidos() {
                       <SearchIcon />
                     </InputAdornment>
                   ),
-                }}
-                
+                }}                
               />
             </Grid>
 

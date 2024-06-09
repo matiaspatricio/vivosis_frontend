@@ -66,11 +66,11 @@ function App() {
   const [productosOpen, setProductosOpen] = useState(false);
 
   const handleDrawerOpen = () => {
-    setDrawerOpen(true);
+    setDrawerOpen(true);    
   };
 
   const handleDrawerClose = () => {
-    setDrawerOpen(false);
+    setDrawerOpen(false);    
   };
 
   const handleServicesToggle = () => {
