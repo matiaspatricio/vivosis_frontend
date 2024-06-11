@@ -22,6 +22,8 @@ const Dashboard = () => {
   const [montoTotal, setMontoTotal] = useState(0);
 
   useEffect(() => {
+    const usuario = localStorage.getItem('usuario');
+
     const fetchData = async () => {
       try {
         setPedidosHoy(await getPedidosHoy());

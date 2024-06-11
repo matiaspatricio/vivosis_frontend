@@ -20,6 +20,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import Register from './components/Register';
 import Logout from './components/Logout';
+import Blanco from './components/Blanco';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import {
@@ -64,6 +65,7 @@ function App() {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [clientesOpen, setClientesOpen] = useState(false);
   const [productosOpen, setProductosOpen] = useState(false);
+  const [isCamila, setIsCamila] = useState(true);
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);    
@@ -88,6 +90,15 @@ function App() {
   useEffect(() => {
     document.title = "Sistema de Pedidos";
     const token = localStorage.getItem('token');
+    const usuario = localStorage.getItem('usuario');
+
+    if (usuario === 'cgimenez') {
+      setIsCamila(true);
+    }
+      else {
+        setIsCamila(false);
+      }      
+    
 
     if (token) {
       // Si se encuentra un token almacenado, establece el estado de autenticación como logueado
@@ -155,8 +166,6 @@ function App() {
           </ListItem>
           <Collapse in={clientesOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              
-
               <ListItem
                 button
                 component={Link}
@@ -259,8 +268,6 @@ function App() {
                 <ListItemText primary="VISUALIZAR" />
               </ListItem>
 
-              
-
               <ListItem
                 button
                 component={Link}
@@ -285,8 +292,7 @@ function App() {
                   <VisibilityIcon />
                 </ListItemIcon>
                 <ListItemText primary="HISTORICO (PEDIDOS)" />
-              </ListItem>              
-              
+              </ListItem>
             </List>
           </Collapse>
           <ListItem button component={Link} to="/veringresos" onClick={handleDrawerClose}>
@@ -300,8 +306,13 @@ function App() {
         </List>
       </Drawer>
       <Routes>
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} /> 
-        <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
+        {!isCamila && (
+          <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
+        )}
+        {isCamila && isAuthenticated && (//si es camila y esta autenticado
+          <Route path="/" element={<PrivateRoute element={<Blanco />} />} />
+        )}
+        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
         <Route path="/verclientes" element={<PrivateRoute element={<VerClientes />} />} />
         <Route path="/crearcliente" element={<PrivateRoute element={<CrearCliente />} />} />
         <Route path="/verproductos" element={<PrivateRoute element={<VerProductos />} />} />
@@ -317,7 +328,7 @@ function App() {
         <Route path="/crearproducto/" element={<PrivateRoute element={<CrearProducto />} />} />
         <Route path="/crearingreso/" element={<PrivateRoute element={<CrearIngreso />} />} />
         <Route path="/crearpedido/" element={<PrivateRoute element={<CrearPedido />} />} />
-        
+
         <Route path="/enviosclientes/" element={<PrivateRoute element={<EnviosClientes />} />} />
         <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
         <Route path="/register" element={isAuthenticated ? <Navigate to="/" replace /> : <Register />}
