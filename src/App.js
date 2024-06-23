@@ -89,11 +89,12 @@ function App() {
 
   useEffect(() => {
     document.title = "Sistema de Pedidos";
-    const token = localStorage.getItem('token');
-    const usuario = localStorage.getItem('usuario');
-
+    const token = localStorage.token;
+    const usuario = localStorage.username;
+            
     if (usuario === 'cgimenez') {
       setIsCamila(true);
+      
     }
       else {
         setIsCamila(false);
@@ -306,12 +307,13 @@ function App() {
         </List>
       </Drawer>
       <Routes>
-        {!isCamila && (
-          <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
-        )}
-        {isCamila && (//si es camila y esta autenticado
-          <Route path="/" element={<PrivateRoute element={<Blanco />} />} />
-        )}
+      {isCamila && isAuthenticated ? (
+    // Si es Camila y está autenticado, muestra Blanco
+    <Route path="/" element={<PrivateRoute element={<Blanco />} />} />
+  ) : (
+    // Para cualquier otro caso que no sea Camila autenticado, muestra Dashboard
+    <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
+  )}
         <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
         <Route path="/verclientes" element={<PrivateRoute element={<VerClientes />} />} />
         <Route path="/crearcliente" element={<PrivateRoute element={<CrearCliente />} />} />

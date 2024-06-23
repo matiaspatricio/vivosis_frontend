@@ -23,7 +23,7 @@ const AuthForm = () => {
       const { username } = response.data.user;
       
       localStorage.setItem('token', token); // Guardar el token en el localStorage
-      localStorage.setItem('username',username)
+      localStorage.setItem('username',username);
       //Cookies.set('token', token, { expires: 7 }); // La cookie expirará después de 7 días
       //const token = Cookies.get('token'); // Obtener el token de la cookie
 
