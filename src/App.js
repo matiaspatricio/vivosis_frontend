@@ -309,7 +309,7 @@ function App() {
         {!isCamila && (
           <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
         )}
-        {isCamila && isAuthenticated && (//si es camila y esta autenticado
+        {isCamila && (//si es camila y esta autenticado
           <Route path="/" element={<PrivateRoute element={<Blanco />} />} />
         )}
         <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
