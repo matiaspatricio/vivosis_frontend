@@ -4,10 +4,7 @@ import { startOfToday, subDays, format } from "date-fns";
 import {
   getPedidosPendientes,
   getPedidosMes,
-  getPedidosSemana,
-  getPedidosAyer,
-  getPedidosHoy,
-  getPedidosSemanaAnterior,
+  getTotalesDashboard  
 } from "./api/pedido/pedido";
 
 const Dashboard = () => {
@@ -27,7 +24,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const pedidosMes = await getPedidosMes();
-        const totalesDashboard = await getPedidosPendientes();
+        const totalesDashboard = await getTotalesDashboard();
         setTotalesDashboard(totalesDashboard);
 
         setMontoTotal(
@@ -249,7 +246,7 @@ const Dashboard = () => {
             </Typography>
             <Typography variant="h4">
             Total de pedidos del mes
-                ? formatToCurrency(totalesDashboard.totalMes)
+            {totalesDashboard.totalMes ? formatToCurrency(totalesDashboard.totalMes)
                 : 0}
             </Typography>
           </CardContent>
@@ -262,7 +259,7 @@ const Dashboard = () => {
               Cantidad pedidos mes anterior
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.totalMes
+              {totalesDashboard.cantidadMesAnterior
                 ? formatToCurrency(totalesDashboard.cantidadMesAnterior)
                 : 0}
             </Typography>
@@ -274,7 +271,7 @@ const Dashboard = () => {
               Total de pedidos del mes anterior
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.cantidadMes
+              {totalesDashboard.totalMesAnterior
                 ? formatToCurrency(totalesDashboard.totalMesAnterior)
                 : 0}
             </Typography>
