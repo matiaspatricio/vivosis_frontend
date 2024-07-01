@@ -10,7 +10,17 @@ const Dashboard = () => {
   const [clientesConPedidosPreparados, setClientesConPedidosPreparados] =
     useState([]);
   const [dineroPendiente, setDineroPendiente] = useState(0);
-  const [totalesDashboard, setTotalesDashboard] = useState(0);
+  const [totalesDashboard, setTotalesDashboard] = useState({
+    pedidosHoy: { cantidadDia: 0, totalHoy: 0 },
+    pedidosAyer: { cantidadAyer: 0, totalAyer: 0 },
+    pedidosSemana: { cantidadSemana: 0, totalSemana: 0 },
+    pedidosSemanaAnterior: {
+      cantidadSemanaAnterior: 0,
+      totalSemanaAnterior: 0,
+    },
+    pedidosMes: { cantidadMes: 0, totalMes: 0 },
+    pedidosMesAnterior: { cantidadMesAnterior: 0, totalMesAnterior: 0 },
+  });
   //const [montoTotal, setMontoTotal] = useState(0);
 
   useEffect(() => {
@@ -19,9 +29,9 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         //const pedidosMes = await getPedidosMes();
-        const totalesDashboard = await getTotalesDashboard();
-        setTotalesDashboard(totalesDashboard);
-        console.log("totalesDashboard", totalesDashboard);
+        const totalDashboard = await getTotalesDashboard();
+        setTotalesDashboard(totalDashboard);
+        console.log("totalesDashboard", totalDashboard);
 
         /*setMontoTotal(
           pedidosMes.reduce((total, pedido) => total + pedido.total, 0)
@@ -120,7 +130,7 @@ const Dashboard = () => {
               Cant. Pedidos hoy
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosHoy.cantidadDia ? totalesDashboard.pedidosHoy.cantidadDia : 0}
+              {totalesDashboard.pedidosHoy?.cantidadDia ?? 0}
             </Typography>
           </CardContent>
         </Card>
@@ -218,12 +228,14 @@ const Dashboard = () => {
             </Typography>
             <Typography variant="h4">
               {totalesDashboard.pedidosSemanaAnterior.totalSemanaAnterior
-                ? formatToCurrency(totalesDashboard.pedidosSemanaAnterior.totalSemanaAnterior)
+                ? formatToCurrency(
+                    totalesDashboard.pedidosSemanaAnterior.totalSemanaAnterior
+                  )
                 : 0}
             </Typography>
           </CardContent>
         </Card>
-      </Grid>      
+      </Grid>
 
       <Grid item xs={12} md={6}>
         <Card>
@@ -240,14 +252,13 @@ const Dashboard = () => {
         </Card>
       </Grid>
 
-        <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6}>
         <Card>
           <CardContent>
-            <Typography variant="h6" gutterBottom></Typography>
+            <Typography variant="h6" gutterBottom>
+            Total pedidos del mes
+            </Typography>
             <Typography variant="h4">
-              Total pedidos del mes
-              </Typography>
-              <Typography variant="h4">
               {totalesDashboard.pedidosMes.totalMes
                 ? formatToCurrency(totalesDashboard.pedidosMes.totalMes)
                 : 0}
@@ -255,7 +266,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={6}>        
+      <Grid item xs={12} md={6}>
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -263,13 +274,15 @@ const Dashboard = () => {
             </Typography>
             <Typography variant="h4">
               {totalesDashboard.pedidosMesAnterior.cantidadMesAnterior
-                ? formatToCurrency(totalesDashboard.pedidosMesAnterior.cantidadMesAnterior)
+                ? formatToCurrency(
+                    totalesDashboard.pedidosMesAnterior.cantidadMesAnterior
+                  )
                 : 0}
             </Typography>
           </CardContent>
         </Card>
       </Grid>
-        <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6}>
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -277,7 +290,9 @@ const Dashboard = () => {
             </Typography>
             <Typography variant="h4">
               {totalesDashboard.pedidosMesAnterior.totalMesAnterior
-                ? formatToCurrency(totalesDashboard.pedidosMesAnterior.totalMesAnterior)
+                ? formatToCurrency(
+                    totalesDashboard.pedidosMesAnterior.totalMesAnterior
+                  )
                 : 0}
             </Typography>
           </CardContent>
@@ -295,16 +310,11 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         <Card>
-        <CardContent>
-            <Typography variant="h6" gutterBottom>
-              
-            </Typography>
-            <Typography variant="h4">
-              
-            </Typography>
+          <CardContent>
+            <Typography variant="h6" gutterBottom></Typography>
+            <Typography variant="h4"></Typography>
           </CardContent>
         </Card>
-
       </Grid>
     </Grid>
   );
