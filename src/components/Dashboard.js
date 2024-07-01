@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Typography, Card, CardContent, Grid } from "@mui/material";
 import { startOfToday, subDays, format } from "date-fns";
 import {
-  getPedidosPendientes,
-  getPedidosMes,
+  getPedidosPendientes,  
   getTotalesDashboard  
 } from "./api/pedido/pedido";
 
@@ -16,21 +15,21 @@ const Dashboard = () => {
     useState([]);
   const [dineroPendiente, setDineroPendiente] = useState(0);
   const [totalesDashboard, setTotalesDashboard] = useState(0);
-  const [montoTotal, setMontoTotal] = useState(0);
+  //const [montoTotal, setMontoTotal] = useState(0);
 
   useEffect(() => {
     const usuario = localStorage.getItem("usuario");
 
     const fetchData = async () => {
       try {
-        const pedidosMes = await getPedidosMes();
+        //const pedidosMes = await getPedidosMes();
         const totalesDashboard = await getTotalesDashboard();
         setTotalesDashboard(totalesDashboard);
 
-        setMontoTotal(
+        /*setMontoTotal(
           pedidosMes.reduce((total, pedido) => total + pedido.total, 0)
         );
-
+*/
         const data = await getPedidosPendientes();
         setPedidosPendientes(
           data.filter((pedido) => pedido.estado_pedido === "PENDIENTE")
