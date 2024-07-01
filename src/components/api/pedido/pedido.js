@@ -1,4 +1,6 @@
-const API_URL = "https://vivosis.vercel.app/api/pedido";
+//const API_URL = "https://vivosis.vercel.app/api/pedido";
+const API_URL = "http://localhost:3001/api/pedido";
+
 
 export const getPedidosPendientes = async () => {
   const response = await fetch(`${API_URL}/getpedidospendientes`);

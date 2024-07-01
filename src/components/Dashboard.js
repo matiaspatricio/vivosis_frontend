@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { Typography, Card, CardContent, Grid } from "@mui/material";
-import { startOfToday, subDays, format } from "date-fns";
-import {
-  getPedidosPendientes,  
-  getTotalesDashboard  
-} from "./api/pedido/pedido";
+import { getPedidosPendientes, getTotalesDashboard } from "./api/pedido/pedido";
 
 const Dashboard = () => {
   const [pedidosPendientes, setPedidosPendientes] = useState([]);
@@ -25,6 +21,7 @@ const Dashboard = () => {
         //const pedidosMes = await getPedidosMes();
         const totalesDashboard = await getTotalesDashboard();
         setTotalesDashboard(totalesDashboard);
+        console.log("totalesDashboard", totalesDashboard);
 
         /*setMontoTotal(
           pedidosMes.reduce((total, pedido) => total + pedido.total, 0)
@@ -122,7 +119,9 @@ const Dashboard = () => {
             <Typography variant="h6" gutterBottom>
               Cant. Pedidos hoy
             </Typography>
-            <Typography variant="h4">{totalesDashboard.cantidadDia}</Typography>
+            <Typography variant="h4">
+              {totalesDashboard.pedidosHoy.cantidadDia ? totalesDashboard.pedidosHoy.cantidadDia : 0}
+            </Typography>
           </CardContent>
         </Card>
       </Grid>
@@ -133,7 +132,9 @@ const Dashboard = () => {
               Total de hoy
             </Typography>
             <Typography variant="h4">
-              {formatToCurrency(totalesDashboard.totalHoy)}
+              {totalesDashboard.pedidosHoy.totalHoy
+                ? formatToCurrency(totalesDashboard.pedidosHoy.totalHoy)
+                : 0}
             </Typography>
           </CardContent>
         </Card>
@@ -145,7 +146,9 @@ const Dashboard = () => {
               Cant. Pedidos ayer
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.cantidadAyer}
+              {totalesDashboard.pedidosAyer.cantidadAyer
+                ? totalesDashboard.pedidosAyer.cantidadAyer
+                : 0}
             </Typography>
           </CardContent>
         </Card>
@@ -157,7 +160,9 @@ const Dashboard = () => {
               Total de ayer
             </Typography>
             <Typography variant="h4">
-              {formatToCurrency(totalesDashboard.totalAyer)}
+              {totalesDashboard.pedidosAyer.totalAyer
+                ? formatToCurrency(totalesDashboard.pedidosAyer.totalAyer)
+                : 0}
             </Typography>
           </CardContent>
         </Card>
@@ -169,7 +174,9 @@ const Dashboard = () => {
               Cant. esta semana
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.cantidadSemana}
+              {totalesDashboard.pedidosSemana.cantidadSemana
+                ? totalesDashboard.pedidosSemana.cantidadSemana
+                : 0}
             </Typography>
           </CardContent>
         </Card>
@@ -181,7 +188,9 @@ const Dashboard = () => {
               Total esta semana
             </Typography>
             <Typography variant="h4">
-              {formatToCurrency(totalesDashboard.totalSemana)}
+              {totalesDashboard.pedidosSemana.totalSemana
+                ? formatToCurrency(totalesDashboard.pedidosSemana.totalSemana)
+                : 0}
             </Typography>
           </CardContent>
         </Card>
@@ -194,7 +203,9 @@ const Dashboard = () => {
               Cant. semana anterior
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.cantidadSemanaAnterior}
+              {totalesDashboard.pedidosSemanaAnterior.cantidadSemanaAnterior
+                ? totalesDashboard.pedidosSemanaAnterior.cantidadSemanaAnterior
+                : 0}
             </Typography>
           </CardContent>
         </Card>
@@ -206,12 +217,72 @@ const Dashboard = () => {
               Total semana anterior
             </Typography>
             <Typography variant="h4">
-              {formatToCurrency(totalesDashboard.totalSemanaAnterior)}
+              {totalesDashboard.pedidosSemanaAnterior.totalSemanaAnterior
+                ? formatToCurrency(totalesDashboard.pedidosSemanaAnterior.totalSemanaAnterior)
+                : 0}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>      
+
+      <Grid item xs={12} md={6}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Cantidad pedidos mes
+            </Typography>
+            <Typography variant="h4">
+              {totalesDashboard.pedidosMes.totalMes
+                ? formatToCurrency(totalesDashboard.pedidosMes.cantidadMes)
+                : 0}
             </Typography>
           </CardContent>
         </Card>
       </Grid>
 
+        <Grid item xs={12} md={6}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom></Typography>
+            <Typography variant="h4">
+              Total pedidos del mes
+              </Typography>
+              <Typography variant="h4">
+              {totalesDashboard.pedidosMes.totalMes
+                ? formatToCurrency(totalesDashboard.pedidosMes.totalMes)
+                : 0}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={6}>        
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Cantidad pedidos mes anterior
+            </Typography>
+            <Typography variant="h4">
+              {totalesDashboard.pedidosMesAnterior.cantidadMesAnterior
+                ? formatToCurrency(totalesDashboard.pedidosMesAnterior.cantidadMesAnterior)
+                : 0}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+        <Grid item xs={12} md={6}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Total pedidos del mes anterior
+            </Typography>
+            <Typography variant="h4">
+              {totalesDashboard.pedidosMesAnterior.totalMesAnterior
+                ? formatToCurrency(totalesDashboard.pedidosMesAnterior.totalMesAnterior)
+                : 0}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
       <Grid item xs={12} md={6}>
         <Card>
           <CardContent>
@@ -223,59 +294,17 @@ const Dashboard = () => {
             </Typography>
           </CardContent>
         </Card>
-      </Grid>
-
-      <Grid item xs={12} md={6}>
         <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-            Cantidad pedidos mes              
-            </Typography>
-            <Typography variant="h4">
-              {totalesDashboard.totalMes
-                ? formatToCurrency(totalesDashboard.cantidadMes)
-                : 0}
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
+        <CardContent>
             <Typography variant="h6" gutterBottom>
               
             </Typography>
             <Typography variant="h4">
-            Total de pedidos del mes
-            {totalesDashboard.totalMes ? formatToCurrency(totalesDashboard.totalMes)
-                : 0}
+              
             </Typography>
           </CardContent>
         </Card>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Cantidad pedidos mes anterior
-            </Typography>
-            <Typography variant="h4">
-              {totalesDashboard.cantidadMesAnterior
-                ? formatToCurrency(totalesDashboard.cantidadMesAnterior)
-                : 0}
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Total de pedidos del mes anterior
-            </Typography>
-            <Typography variant="h4">
-              {totalesDashboard.totalMesAnterior
-                ? formatToCurrency(totalesDashboard.totalMesAnterior)
-                : 0}
-            </Typography>
-          </CardContent>
-        </Card>
+
       </Grid>
     </Grid>
   );
