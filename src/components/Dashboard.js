@@ -245,7 +245,7 @@ const Dashboard = () => {
             </Typography>
             <Typography variant="h4">
               {totalesDashboard.pedidosMes.totalMes
-                ? formatToCurrency(totalesDashboard.pedidosMes.cantidadMes)
+                ? totalesDashboard.pedidosMes.cantidadMes
                 : 0}
             </Typography>
           </CardContent>
@@ -256,7 +256,7 @@ const Dashboard = () => {
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
-            Total pedidos del mes
+              Total pedidos del mes
             </Typography>
             <Typography variant="h4">
               {totalesDashboard.pedidosMes.totalMes
@@ -274,9 +274,7 @@ const Dashboard = () => {
             </Typography>
             <Typography variant="h4">
               {totalesDashboard.pedidosMesAnterior.cantidadMesAnterior
-                ? formatToCurrency(
-                    totalesDashboard.pedidosMesAnterior.cantidadMesAnterior
-                  )
+                ? totalesDashboard.pedidosMesAnterior.cantidadMesAnterior
                 : 0}
             </Typography>
           </CardContent>

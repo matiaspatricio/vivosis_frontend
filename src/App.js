@@ -1,28 +1,34 @@
-import './App.css';
-import VerClientes from './components/VerClientes';
-import VerProductos from './components/VerProductos';
-import VerIngresos from './components/VerIngresos';
-import VerPedidos from './components/VerPedidos';
-import ModificarCliente from './components/ModificarCliente';
-import ModificarProducto from './components/ModificarProducto';
-import ModificarIngreso from './components/ModificarIngreso';
-import ModificarPedido from './components/ModificarPedido';
-import CrearCliente from './components/CrearCliente';
-import CrearProducto from './components/CrearProducto';
-import CrearIngreso from './components/CrearIngreso';
-import CrearPedido from './components/CrearPedido';
-import ActualizaMasivaPedidos from './components/ActualizaMasivaPedidos';
-import EnviosClientes from './components/EnviosClientes';
-import Stack from '@mui/material/Stack';
-import CreateIcon from '@mui/icons-material/Create';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import Register from './components/Register';
-import Logout from './components/Logout';
-import Blanco from './components/Blanco';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import "./App.css";
+import VerClientes from "./components/VerClientes";
+import VerProductos from "./components/VerProductos";
+import VerIngresos from "./components/VerIngresos";
+import VerPedidos from "./components/VerPedidos";
+import ModificarCliente from "./components/ModificarCliente";
+import ModificarProducto from "./components/ModificarProducto";
+import ModificarIngreso from "./components/ModificarIngreso";
+import ModificarPedido from "./components/ModificarPedido";
+import CrearCliente from "./components/CrearCliente";
+import CrearProducto from "./components/CrearProducto";
+import CrearIngreso from "./components/CrearIngreso";
+import CrearPedido from "./components/CrearPedido";
+import ActualizaMasivaPedidos from "./components/ActualizaMasivaPedidos";
+import EnviosClientes from "./components/EnviosClientes";
+import Stack from "@mui/material/Stack";
+import CreateIcon from "@mui/icons-material/Create";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import Register from "./components/Register";
+import Logout from "./components/Logout";
+import Blanco from "./components/Blanco";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+} from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -34,20 +40,20 @@ import {
   ListItemText,
   ListItemIcon,
   Drawer,
-} from '@mui/material';
+} from "@mui/material";
 
-import MenuSharpIcon from '@mui/icons-material/MenuSharp';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Collapse from '@mui/material/Collapse';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
-import VerPedidosHistorico from './components/VerPedidosHistorico';
+import MenuSharpIcon from "@mui/icons-material/MenuSharp";
+import HomeIcon from "@mui/icons-material/Home";
+import PersonIcon from "@mui/icons-material/Person";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Collapse from "@mui/material/Collapse";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import VerPedidosHistorico from "./components/VerPedidosHistorico";
 
 function NoMatch() {
   return (
@@ -68,11 +74,11 @@ function App() {
   const [isCamila, setIsCamila] = useState(true);
 
   const handleDrawerOpen = () => {
-    setDrawerOpen(true);    
+    setDrawerOpen(true);
   };
 
   const handleDrawerClose = () => {
-    setDrawerOpen(false);    
+    setDrawerOpen(false);
   };
 
   const handleServicesToggle = () => {
@@ -91,15 +97,12 @@ function App() {
     document.title = "Sistema de Pedidos";
     const token = localStorage.token;
     const usuario = localStorage.username;
-            
-    if (usuario === 'cgimenez') {
+
+    if (usuario === "cgimenez") {
       setIsCamila(true);
-      
+    } else {
+      setIsCamila(false);
     }
-      else {
-        setIsCamila(false);
-      }      
-    
 
     if (token) {
       // Si se encuentra un token almacenado, establece el estado de autenticación como logueado
@@ -109,8 +112,8 @@ function App() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
 
     setAuthToken(null);
     setIsAuthenticated(false);
@@ -124,7 +127,12 @@ function App() {
     <Router>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={handleDrawerOpen}
+          >
             <MenuSharpIcon />
           </IconButton>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
@@ -133,7 +141,12 @@ function App() {
           <div>
             {isAuthenticated ? (
               <>
-                <Button color="inherit" component={Link} to="/logout" onClick={handleLogout}>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/logout"
+                  onClick={handleLogout}
+                >
                   Logout
                 </Button>
               </>
@@ -296,7 +309,12 @@ function App() {
               </ListItem>
             </List>
           </Collapse>
-          <ListItem button component={Link} to="/veringresos" onClick={handleDrawerClose}>
+          <ListItem
+            button
+            component={Link}
+            to="/veringresos"
+            onClick={handleDrawerClose}
+          >
             <ListItemIcon>
               <LocalShippingIcon />
             </ListItemIcon>
@@ -307,35 +325,98 @@ function App() {
         </List>
       </Drawer>
       <Routes>
-      {isCamila && isAuthenticated ? (
-    // Si es Camila y está autenticado, muestra Blanco
-    <Route path="/" element={<PrivateRoute element={<Blanco />} />} />
-  ) : (
-    // Para cualquier otro caso que no sea Camila autenticado, muestra Dashboard
-    <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
-  )}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-        <Route path="/verclientes" element={<PrivateRoute element={<VerClientes />} />} />
-        <Route path="/crearcliente" element={<PrivateRoute element={<CrearCliente />} />} />
-        <Route path="/verproductos" element={<PrivateRoute element={<VerProductos />} />} />
-        <Route path="/crearproducto" element={<PrivateRoute element={<CrearProducto />} />} />
-        <Route path="/veringresos" element={<PrivateRoute element={<VerIngresos />} />} />
-        <Route path="/verpedidos" element={<PrivateRoute element={<VerPedidos />} />} />
-        <Route path="/verpedidoshistorico" element={<PrivateRoute element={<VerPedidosHistorico />} />} />
-        <Route path="/modificarcliente/:id" element={<PrivateRoute element={<ModificarCliente />} />} />
-        <Route path="/modificarproducto/:id" element={<PrivateRoute element={<ModificarProducto />} />} />
-        <Route path="/modificaringreso/:id" element={<PrivateRoute element={<ModificarIngreso />} />} />
-        <Route path="/modificarpedido/:id" element={<PrivateRoute element={<ModificarPedido />} />} />
-        <Route path="/crearcliente/" element={<PrivateRoute element={<CrearCliente />} />} />
-        <Route path="/crearproducto/" element={<PrivateRoute element={<CrearProducto />} />} />
-        <Route path="/crearingreso/" element={<PrivateRoute element={<CrearIngreso />} />} />
-        <Route path="/crearpedido/" element={<PrivateRoute element={<CrearPedido />} />} />
-
-        <Route path="/enviosclientes/" element={<PrivateRoute element={<EnviosClientes />} />} />
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
-        <Route path="/register" element={isAuthenticated ? <Navigate to="/" replace /> : <Register />}
+        {isCamila && isAuthenticated ? (
+          // Si es Camila y está autenticado, muestra Blanco
+          <Route path="/" element={<PrivateRoute element={<Blanco />} />} />
+        ) : (
+          // Para cualquier otro caso que no sea Camila autenticado, muestra Dashboard
+          <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
+        )}
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
+          }
         />
-        <Route path="/logout" element={isAuthenticated ? <Logout /> : <Navigate to="/login" replace />} />
+        <Route
+          path="/verclientes"
+          element={<PrivateRoute element={<VerClientes />} />}
+        />
+        <Route
+          path="/crearcliente"
+          element={<PrivateRoute element={<CrearCliente />} />}
+        />
+        <Route
+          path="/verproductos"
+          element={<PrivateRoute element={<VerProductos />} />}
+        />
+        <Route
+          path="/crearproducto"
+          element={<PrivateRoute element={<CrearProducto />} />}
+        />
+        <Route
+          path="/veringresos"
+          element={<PrivateRoute element={<VerIngresos />} />}
+        />
+        <Route
+          path="/verpedidos"
+          element={<PrivateRoute element={<VerPedidos />} />}
+        />
+        <Route
+          path="/verpedidoshistorico"
+          element={<PrivateRoute element={<VerPedidosHistorico />} />}
+        />
+        <Route
+          path="/modificarcliente/:id"
+          element={<PrivateRoute element={<ModificarCliente />} />}
+        />
+        <Route
+          path="/modificarproducto/:id"
+          element={<PrivateRoute element={<ModificarProducto />} />}
+        />
+        <Route
+          path="/modificaringreso/:id"
+          element={<PrivateRoute element={<ModificarIngreso />} />}
+        />
+        <Route
+          path="/modificarpedido/:id"
+          element={<PrivateRoute element={<ModificarPedido />} />}
+        />
+        <Route
+          path="/crearcliente/"
+          element={<PrivateRoute element={<CrearCliente />} />}
+        />
+        <Route
+          path="/crearproducto/"
+          element={<PrivateRoute element={<CrearProducto />} />}
+        />
+        <Route
+          path="/crearingreso/"
+          element={<PrivateRoute element={<CrearIngreso />} />}
+        />
+        <Route
+          path="/crearpedido/"
+          element={<PrivateRoute element={<CrearPedido />} />}
+        />
+
+        <Route
+          path="/enviosclientes/"
+          element={<PrivateRoute element={<EnviosClientes />} />}
+        />
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
+        />
+        <Route
+          path="/register"
+          element={isAuthenticated ? <Navigate to="/" replace /> : <Register />}
+        />
+        <Route
+          path="/logout"
+          element={
+            isAuthenticated ? <Logout /> : <Navigate to="/login" replace />
+          }
+        />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </Router>
