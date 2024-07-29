@@ -1,87 +1,87 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Box from '@mui/material/Box';
-import { DatePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import dayjs from 'dayjs';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { Autocomplete } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Box from "@mui/material/Box";
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { Autocomplete } from "@mui/material";
 
 function ModificarPedido() {
   const listaEstadosPedido = [
-    { value: 'PENDIENTE', label: 'PENDIENTE' },
-    { value: 'PREPARADO', label: 'PREPARADO' },
-    { value: 'FINALIZADO', label: 'FINALIZADO' },
-    { value: 'CANCELADO', label: 'CANCELADO' }
+    { value: "PENDIENTE", label: "PENDIENTE" },
+    { value: "PREPARADO", label: "PREPARADO" },
+    { value: "FINALIZADO", label: "FINALIZADO" },
+    { value: "CANCELADO", label: "CANCELADO" },
   ];
 
   const listaEstadosPago = [
-    { value: 'PENDIENTE', label: 'PENDIENTE' },
-    { value: 'ABONADO', label: 'ABONADO' }
+    { value: "PENDIENTE", label: "PENDIENTE" },
+    { value: "ABONADO", label: "ABONADO" },
   ];
 
   const navigate = useNavigate();
   const { id } = useParams();
   const [pedido, setPedido] = useState({});
-  const [fecha, setFecha] = useState('');
-  const [idCliente, setIdCliente] = useState('');
-  const [idArticulo, setIdArticulo] = useState('');
-  const [nombreCliente, setNombreCliente] = useState('');
-  const [nombreArticulo, setNombreArticulo] = useState('');
+  const [fecha, setFecha] = useState("");
+  const [idCliente, setIdCliente] = useState("");
+  const [idArticulo, setIdArticulo] = useState("");
+  const [nombreCliente, setNombreCliente] = useState("");
+  const [nombreArticulo, setNombreArticulo] = useState("");
   const [cantidad, setCantidad] = useState(0);
   const [precio, setPrecio] = useState(0);
   const [total, setTotal] = useState(0);
   const [costo, setCosto] = useState(0);
-  const [estadoPago, setEstadoPago] = useState('');
-  const [estadoPedido, setEstadoPedido] = useState('');
-  const [comentarios, setComentarios] = useState('');
+  const [estadoPago, setEstadoPago] = useState("");
+  const [estadoPedido, setEstadoPedido] = useState("");
+  const [comentarios, setComentarios] = useState("");
   const [fechaEntrega, setFechaEntrega] = useState(null);
-  const [usuario, setUsuario] = useState(localStorage.getItem('username'));
-  const [mensaje, setMensaje] = useState('');
+  const [usuario, setUsuario] = useState(localStorage.getItem("username"));
+  const [mensaje, setMensaje] = useState("");
   const [mostrarMensaje, setMostrarMensaje] = useState(false);
   const [guardarHabilitado, setGuardarHabilitado] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
-  const [tipoEstado, setTipoEstado] = useState('');
+  const [tipoEstado, setTipoEstado] = useState("");
 
   useEffect(() => {
     fetch(`https://vivosis.vercel.app/api/pedido/${id}`)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setPedido(data);
       })
-      .catch(error => {
-        console.log('Error al cargar el pedido:', error);
+      .catch((error) => {
+        console.log("Error al cargar el pedido:", error);
       });
   }, [id]);
 
   useEffect(() => {
-    setFecha(pedido.fecha || '');
-    setIdCliente(pedido.id_cliente || '');
-    setIdArticulo(pedido.id_articulo || '');
-    setNombreCliente(pedido.nombre_cliente || '');
-    setNombreArticulo(pedido.nombre_articulo || '');
+    setFecha(pedido.fecha || "");
+    setIdCliente(pedido.id_cliente || "");
+    setIdArticulo(pedido.id_articulo || "");
+    setNombreCliente(pedido.nombre_cliente || "");
+    setNombreArticulo(pedido.nombre_articulo || "");
     setCantidad(pedido.cantidad || 0);
     setPrecio(pedido.precio || 0);
     setTotal(pedido.total || 0);
     setCosto(pedido.costo || 0);
-    setEstadoPedido(pedido.estado_pedido || '');
-    setEstadoPago(pedido.estado_pago || '');
-    setComentarios(pedido.comentarios || '');
+    setEstadoPedido(pedido.estado_pedido || "");
+    setEstadoPago(pedido.estado_pago || "");
+    setComentarios(pedido.comentarios || "");
     setFechaEntrega(pedido.fecha_entrega || null);
   }, [pedido]);
 
@@ -99,92 +99,92 @@ function ModificarPedido() {
   }, [precio, cantidad]);
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
-  }; 
+  };
 
-  const handleFechaChange = event => {
+  const handleFechaChange = (event) => {
     setFecha(event.target.value);
   };
 
-  const handleIdClienteChange = event => {
+  const handleIdClienteChange = (event) => {
     setIdCliente(event.target.value);
   };
 
-  const handleIdArticuloChange = event => {
+  const handleIdArticuloChange = (event) => {
     setIdArticulo(event.target.value);
   };
 
-  const handleNombreClienteChange = event => {
+  const handleNombreClienteChange = (event) => {
     setNombreCliente(event.target.value);
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       event.preventDefault();
     }
   };
 
-  const handleNombreArticuloChange = event => {
+  const handleNombreArticuloChange = (event) => {
     setNombreArticulo(event.target.value);
   };
 
-  const handleCantidadChange = event => {
+  const handleCantidadChange = (event) => {
     setCantidad(event.target.value);
   };
 
-  const handlePrecioChange = event => {
+  const handlePrecioChange = (event) => {
     setPrecio(event.target.value);
   };
 
-  const handleCostoChange = event => {
+  const handleCostoChange = (event) => {
     setCosto(event.target.value);
   };
 
-  const handleEstadoPagoChange = event => {    
+  const handleEstadoPagoChange = (event) => {
     setEstadoPago(event.target.value);
   };
 
-  const handleEstadoChange = event => {
+  const handleEstadoChange = (event) => {
     setEstadoPedido(event.target.value);
   };
 
-  const handleComentariosChange = event => {
+  const handleComentariosChange = (event) => {
     setComentarios(event.target.value);
   };
 
-  const handleFechaEntregaChange = newValue => {
+  const handleFechaEntregaChange = (newValue) => {
     setFechaEntrega(newValue);
   };
 
   const actualizarStock = (cantidadOriginal, nuevaCantidad) => {
     fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`)
-      .then(response => response.json())
-      .then(producto => {
+      .then((response) => response.json())
+      .then((producto) => {
         producto.stock += cantidadOriginal;
         producto.stock -= nuevaCantidad;
         guardarCambiosEnProducto(producto);
       })
-      .catch(error => {
-        console.log('Error al obtener el producto:', error);
+      .catch((error) => {
+        console.log("Error al obtener el producto:", error);
       });
   };
 
-  const guardarCambiosEnProducto = producto => {
+  const guardarCambiosEnProducto = (producto) => {
     fetch(`https://vivosis.vercel.app/api/producto/${producto._id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(producto)
+      body: JSON.stringify(producto),
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Stock del producto actualizado:', data);
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Stock del producto actualizado:", data);
       })
-      .catch(error => {
-        console.log('Error al actualizar el stock del producto:', error);
+      .catch((error) => {
+        console.log("Error al actualizar el stock del producto:", error);
       });
   };
 
@@ -220,28 +220,33 @@ function ModificarPedido() {
 
     const cantidadOriginal = pedido.cantidad;
     fetch(`https://vivosis.vercel.app/api/pedido/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(pedidoModificado),
     })
-      .then(response => response.json())
-      .then(data => {
-        setMensaje('El pedido ha sido actualizado');
+      .then((response) => response.json())
+      .then((data) => {
+        setMensaje("El pedido ha sido actualizado");
         setMostrarMensaje(true);
         actualizarStock(cantidadOriginal, cantidad);
         setTimeout(() => {
           navigate(`/verpedidos`);
         }, 800);
       })
-      .catch(error => {
-        console.log('Error al modificar el pedido:', error);
+      .catch((error) => {
+        console.log("Error al modificar el pedido:", error);
       });
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+    >
       <Card>
         <CardContent>
           <h2>Modificar Pedido</h2>
@@ -254,7 +259,7 @@ function ModificarPedido() {
               margin="dense"
               disabled
             />
-            <br />            
+            <br />
             <TextField
               label="Nombre del cliente"
               value={nombreCliente}
@@ -263,7 +268,7 @@ function ModificarPedido() {
               margin="dense"
               disabled
             />
-            <br />            
+            <br />
             <TextField
               label="Nombre del artículo"
               value={nombreArticulo}
@@ -317,7 +322,7 @@ function ModificarPedido() {
             <TextField
               label="Estado"
               value={estadoPedido}
-              onClick={() => handleDialogOpen('estadoPedido')}
+              onClick={() => handleDialogOpen("estadoPedido")}
               variant="outlined"
               margin="dense"
             />
@@ -325,12 +330,12 @@ function ModificarPedido() {
             <TextField
               label="Estado pago"
               value={estadoPago}
-              onClick={() => handleDialogOpen('estadoPago')}
+              onClick={() => handleDialogOpen("estadoPago")}
               variant="outlined"
               margin="dense"
             />
             <br />
-            
+
             <TextField
               label="Comentarios"
               value={comentarios}
@@ -346,25 +351,29 @@ function ModificarPedido() {
             <DialogTitle>Seleccionar Estado</DialogTitle>
             <DialogContent>
               <Select
-                value={tipoEstado === 'estadoPedido' ? estadoPedido : estadoPago}
-                onChange={tipoEstado === 'estadoPedido' ? handleEstadoChange : handleEstadoPagoChange}
+                value={
+                  tipoEstado === "estadoPedido" ? estadoPedido : estadoPago
+                }
+                onChange={
+                  tipoEstado === "estadoPedido"
+                    ? handleEstadoChange
+                    : handleEstadoPagoChange
+                }
                 variant="outlined"
                 margin="dense"
                 fullWidth
               >
-                {tipoEstado === 'estadoPedido' ? (
-                  listaEstadosPedido.map(opcion => (
-                    <MenuItem key={opcion.value} value={opcion.value}>
-                      {opcion.label}
-                    </MenuItem>
-                  ))
-                ) : (
-                  listaEstadosPago.map(opcion => (
-                    <MenuItem key={opcion.value} value={opcion.value}>
-                      {opcion.label}
-                    </MenuItem>
-                  ))
-                )}
+                {tipoEstado === "estadoPedido"
+                  ? listaEstadosPedido.map((opcion) => (
+                      <MenuItem key={opcion.value} value={opcion.value}>
+                        {opcion.label}
+                      </MenuItem>
+                    ))
+                  : listaEstadosPago.map((opcion) => (
+                      <MenuItem key={opcion.value} value={opcion.value}>
+                        {opcion.label}
+                      </MenuItem>
+                    ))}
               </Select>
             </DialogContent>
             <DialogActions>
@@ -375,14 +384,24 @@ function ModificarPedido() {
             </DialogActions>
           </Dialog>
         </CardContent>
-        <CardActions style={{ justifyContent: 'center' }}>
+        <CardActions style={{ justifyContent: "center" }}>
           <Box sx={{ mx: 1 }}>
-            <Button variant="contained" color="primary" onClick={handleGuardar} disabled={!guardarHabilitado}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleGuardar}
+              disabled={!guardarHabilitado}
+            >
               Guardar
             </Button>
           </Box>
           <Box sx={{ mx: 1 }}>
-            <Button variant="contained" color='error' component={Link} to="/verpedidos">
+            <Button
+              variant="contained"
+              color="error"
+              component={Link}
+              to="/verpedidos"
+            >
               Atrás
             </Button>
           </Box>

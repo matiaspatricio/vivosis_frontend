@@ -1,48 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { makeStyles } from '@mui/styles';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import SearchIcon from '@mui/icons-material/Search';
-import InputAdornment from '@mui/material/InputAdornment';
-import TextField from '@mui/material/TextField';
-import { useNavigate } from 'react-router-dom';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import { Box } from '@mui/material';
-import CreateIcon from '@mui/icons-material/Create';
+import React, { useEffect, useState } from "react";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { makeStyles } from "@mui/styles";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
+import { useNavigate } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import { Box } from "@mui/material";
+import CreateIcon from "@mui/icons-material/Create";
 
 const useStyles = makeStyles({
   root: {
     height: 400,
-    width: '100%',
-    margin: '10px auto',
-    '& .MuiDataGrid-root': {
-      border: '1px solid #ccc',
-      backgroundColor: '#f5f5f5',
+    width: "100%",
+    margin: "10px auto",
+    "& .MuiDataGrid-root": {
+      border: "1px solid #ccc",
+      backgroundColor: "#f5f5f5",
     },
-    '& .MuiDataGrid-cell': {
-      border: '1px solid #ccc',
-      padding: '8px',
+    "& .MuiDataGrid-cell": {
+      border: "1px solid #ccc",
+      padding: "8px",
     },
-    '& .MuiButton-root': {
-      marginLeft: '5px',
+    "& .MuiButton-root": {
+      marginLeft: "5px",
     },
   },
   filtersContainer: {
-    marginBottom: '10px',
-    display: 'flex',
-    justifyContent: 'space-between',
+    marginBottom: "10px",
+    display: "flex",
+    justifyContent: "space-between",
   },
   filterInput: {
-    width: '180px',
+    width: "180px",
   },
 });
 
@@ -52,35 +52,35 @@ function VerClientes() {
 
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [refreshCount, setRefreshCount] = useState(0);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    fetch('https://vivosis.vercel.app/api/cliente/getallclientes')
-      .then(response => response.json())
-      .then(data => {
-        const clientesConId = data.map(cliente => ({
+    fetch("https://vivosis.vercel.app/api/cliente/getallclientes")
+      .then((response) => response.json())
+      .then((data) => {
+        const clientesConId = data.map((cliente) => ({
           id: cliente._id,
-          ...cliente
+          ...cliente,
         }));
         setClientes(clientesConId);
         setLoading(false);
       })
-      .catch(error => {
-        console.log('Error al cargar los clientess:', error);
+      .catch((error) => {
+        console.log("Error al cargar los clientess:", error);
         setLoading(false);
       });
   }, [refreshCount]);
 
-  const handleEdit = id => {
+  const handleEdit = (id) => {
     console.log(id);
     navigate(`/ModificarCliente/${id}`);
   };
 
-  const handleDelete = id => {
+  const handleDelete = (id) => {
     setSelectedClient(id);
     setConfirmDialogOpen(true);
   };
@@ -88,15 +88,15 @@ function VerClientes() {
   const confirmDelete = () => {
     setConfirmDialogOpen(false);
     fetch(`https://vivosis.vercel.app/api/cliente/${selectedClient}`, {
-      method: 'DELETE'
+      method: "DELETE",
     })
-      .then(response => response.json())
-      .then(data => {
-        setRefreshCount(prevCount => prevCount + 1);
+      .then((response) => response.json())
+      .then((data) => {
+        setRefreshCount((prevCount) => prevCount + 1);
         setSnackbarOpen(true);
       })
-      .catch(error => {
-        console.log('Error al eliminar el cliente:', error);
+      .catch((error) => {
+        console.log("Error al eliminar el cliente:", error);
       });
   };
 
@@ -108,31 +108,40 @@ function VerClientes() {
     setSnackbarOpen(false);
   };
 
-  const handleSearch = event => {
+  const handleSearch = (event) => {
     setSearchText(event.target.value);
   };
 
-  const filteredClientes = clientes.filter(cliente =>
-    cliente.nombre.toLowerCase().includes(searchText.toLowerCase())
+  const filteredClientes = clientes.filter(
+    (cliente) =>
+      (cliente.nombre &&
+        cliente.nombre.toLowerCase().includes(searchText.toLowerCase())) ||
+      (cliente.telefono && cliente.telefono.includes(searchText))
   );
 
   const columns = [
-    { field: 'nombre', headerName: 'Nombre', flex: 1 },
-    { field: 'telefono', headerName: 'Teléfono', flex: 1 },
-    { field: 'direccion', headerName: 'Dirección', flex: 1 },
-    { field: 'localidad', headerName: 'Localidad', flex: 1 },
-    { field: 'estado', headerName: 'Estado', flex: 1 },
-    { field: 'usuario', headerName: 'Usuario', flex: 1 },
+    { field: "nombre", headerName: "Nombre", flex: 1 },
+    { field: "telefono", headerName: "Teléfono", flex: 1 },
+    { field: "direccion", headerName: "Dirección", flex: 1 },
+    { field: "localidad", headerName: "Localidad", flex: 1 },
+    { field: "estado", headerName: "Estado", flex: 1 },
+    { field: "usuario", headerName: "Usuario", flex: 1 },
     {
-      field: 'actions',
-      headerName: 'Acciones',
+      field: "actions",
+      headerName: "Acciones",
       flex: 0.5,
-      renderCell: params => (
+      renderCell: (params) => (
         <>
-          <IconButton aria-label="Editar" onClick={() => handleEdit(params.row.id)}>
+          <IconButton
+            aria-label="Editar"
+            onClick={() => handleEdit(params.row.id)}
+          >
             <EditIcon />
           </IconButton>
-          <IconButton aria-label="Eliminar" onClick={() => handleDelete(params.row.id)}>
+          <IconButton
+            aria-label="Eliminar"
+            onClick={() => handleDelete(params.row.id)}
+          >
             <DeleteIcon />
           </IconButton>
         </>
@@ -141,7 +150,7 @@ function VerClientes() {
   ];
 
   const handleCrearCliente = () => {
-    navigate('/CrearCliente');
+    navigate("/CrearCliente");
   };
 
   return (
@@ -150,15 +159,31 @@ function VerClientes() {
         <div>Cargando clientes...</div>
       ) : (
         <>
-        <br/><br/><br/>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>
-            <Button variant="contained" color="primary" onClick={handleCrearCliente} size="large" endIcon={<CreateIcon />} >
-            Crear Cliente
-          </Button>
-        </Box>   
+          <br />
+          <br />
+          <br />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "20px",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCrearCliente}
+              size="large"
+              endIcon={<CreateIcon />}
+            >
+              Crear Cliente
+            </Button>
+          </Box>
 
-               
-          <br/><br/><br/>
+          <br />
+          <br />
+          <br />
           <TextField
             label="Buscar"
             variant="outlined"
@@ -172,7 +197,13 @@ function VerClientes() {
               ),
             }}
           />
-          <DataGrid rows={filteredClientes} columns={columns} components={{ Toolbar: GridToolbar }} disableRowSelectionOnClick density='compact' />
+          <DataGrid
+            rows={filteredClientes}
+            columns={columns}
+            components={{ Toolbar: GridToolbar }}
+            disableRowSelectionOnClick
+            density="compact"
+          />
 
           <Dialog open={confirmDialogOpen} onClose={handleCancelDelete}>
             <DialogTitle>Confirmar eliminación</DialogTitle>
@@ -190,8 +221,16 @@ function VerClientes() {
               </Button>
             </DialogActions>
           </Dialog>
-          <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
-            <MuiAlert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={3000}
+            onClose={handleSnackbarClose}
+          >
+            <MuiAlert
+              onClose={handleSnackbarClose}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
               Cliente eliminado correctamente.
             </MuiAlert>
           </Snackbar>

@@ -10,7 +10,8 @@ const Dashboard = () => {
   const [clientesConPedidosPreparados, setClientesConPedidosPreparados] =
     useState([]);
   const [dineroPendiente, setDineroPendiente] = useState(0);
-  const [totalesDashboard, setTotalesDashboard] = useState({
+  const [totalesDashboard, setTotalesDashboard] = useState({});
+  /*const [totalesDashboard, setTotalesDashboard] = useState({
     pedidosHoy: { cantidadDia: 0, totalHoy: 0 },
     pedidosAyer: { cantidadAyer: 0, totalAyer: 0 },
     pedidosSemana: { cantidadSemana: 0, totalSemana: 0 },
@@ -20,7 +21,7 @@ const Dashboard = () => {
     },
     pedidosMes: { cantidadMes: 0, totalMes: 0 },
     pedidosMesAnterior: { cantidadMesAnterior: 0, totalMesAnterior: 0 },
-  });
+  });*/
   //const [montoTotal, setMontoTotal] = useState(0);
 
   useEffect(() => {
@@ -31,7 +32,6 @@ const Dashboard = () => {
         //const pedidosMes = await getPedidosMes();
         const totalDashboard = await getTotalesDashboard();
         setTotalesDashboard(totalDashboard);
-        console.log("totalesDashboard", totalDashboard);
 
         /*setMontoTotal(
           pedidosMes.reduce((total, pedido) => total + pedido.total, 0)
@@ -142,7 +142,7 @@ const Dashboard = () => {
               Total de hoy
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosHoy.totalHoy
+              {totalesDashboard.pedidosHoy?.totalHoy
                 ? formatToCurrency(totalesDashboard.pedidosHoy.totalHoy)
                 : 0}
             </Typography>
@@ -156,7 +156,7 @@ const Dashboard = () => {
               Cant. Pedidos ayer
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosAyer.cantidadAyer
+              {totalesDashboard.pedidosAyer?.cantidadAyer
                 ? totalesDashboard.pedidosAyer.cantidadAyer
                 : 0}
             </Typography>
@@ -170,7 +170,7 @@ const Dashboard = () => {
               Total de ayer
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosAyer.totalAyer
+              {totalesDashboard.pedidosAyer?.totalAyer
                 ? formatToCurrency(totalesDashboard.pedidosAyer.totalAyer)
                 : 0}
             </Typography>
@@ -184,7 +184,7 @@ const Dashboard = () => {
               Cant. esta semana
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosSemana.cantidadSemana
+              {totalesDashboard.pedidosSemana?.cantidadSemana
                 ? totalesDashboard.pedidosSemana.cantidadSemana
                 : 0}
             </Typography>
@@ -198,7 +198,7 @@ const Dashboard = () => {
               Total esta semana
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosSemana.totalSemana
+              {totalesDashboard.pedidosSemana?.totalSemana
                 ? formatToCurrency(totalesDashboard.pedidosSemana.totalSemana)
                 : 0}
             </Typography>
@@ -213,7 +213,7 @@ const Dashboard = () => {
               Cant. semana anterior
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosSemanaAnterior.cantidadSemanaAnterior
+              {totalesDashboard.pedidosSemanaAnterior?.cantidadSemanaAnterior
                 ? totalesDashboard.pedidosSemanaAnterior.cantidadSemanaAnterior
                 : 0}
             </Typography>
@@ -227,7 +227,7 @@ const Dashboard = () => {
               Total semana anterior
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosSemanaAnterior.totalSemanaAnterior
+              {totalesDashboard.pedidosSemanaAnterior?.totalSemanaAnterior
                 ? formatToCurrency(
                     totalesDashboard.pedidosSemanaAnterior.totalSemanaAnterior
                   )
@@ -244,7 +244,7 @@ const Dashboard = () => {
               Cantidad pedidos mes
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosMes.totalMes
+              {totalesDashboard.pedidosMes?.totalMes
                 ? totalesDashboard.pedidosMes.cantidadMes
                 : 0}
             </Typography>
@@ -259,7 +259,7 @@ const Dashboard = () => {
               Total pedidos del mes
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosMes.totalMes
+              {totalesDashboard.pedidosMes?.totalMes
                 ? formatToCurrency(totalesDashboard.pedidosMes.totalMes)
                 : 0}
             </Typography>
@@ -273,7 +273,7 @@ const Dashboard = () => {
               Cantidad pedidos mes anterior
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosMesAnterior.cantidadMesAnterior
+              {totalesDashboard.pedidosMesAnterior?.cantidadMesAnterior
                 ? totalesDashboard.pedidosMesAnterior.cantidadMesAnterior
                 : 0}
             </Typography>
@@ -287,7 +287,7 @@ const Dashboard = () => {
               Total pedidos del mes anterior
             </Typography>
             <Typography variant="h4">
-              {totalesDashboard.pedidosMesAnterior.totalMesAnterior
+              {totalesDashboard.pedidosMesAnterior?.totalMesAnterior
                 ? formatToCurrency(
                     totalesDashboard.pedidosMesAnterior.totalMesAnterior
                   )

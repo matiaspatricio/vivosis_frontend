@@ -1,65 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Box from '@mui/material/Box';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Box from "@mui/material/Box";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
 
 function ModificarIngreso() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [ingreso, setIngreso] = useState({});
-  const [fecha, setFecha] = useState('');
-  const [nombreArticulo, setNombreArticulo] = useState('');
+  const [fecha, setFecha] = useState("");
+  const [nombreArticulo, setNombreArticulo] = useState("");
   const [cantidad, setCantidad] = useState(0);
   const [cantidadOriginal, setCantidadOriginal] = useState(0);
-  const [motivo, setMotivo] = useState('');
+  const [motivo, setMotivo] = useState("");
   const [costoUnitario, setCostoUnitario] = useState(0);
   const [precioVenta, setPrecioVenta] = useState(0);
-  const [comentarios, setComentarios] = useState('');
-  const [usuario, setUsuario] = useState(localStorage.getItem('username'));
-  const [mensaje, setMensaje] = useState('');
+  const [comentarios, setComentarios] = useState("");
+  const [usuario, setUsuario] = useState(localStorage.getItem("username"));
+  const [mensaje, setMensaje] = useState("");
   const [mostrarMensaje, setMostrarMensaje] = useState(false);
-  const [idArticulo, setIdArticulo] = useState('');
+  const [idArticulo, setIdArticulo] = useState("");
   const [productos, setProductos] = useState([]);
   const [guardarHabilitado, setGuardarHabilitado] = useState(true);
 
   useEffect(() => {
     fetch(`https://vivosis.vercel.app/api/ingreso/${id}`)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setIngreso(data);
       })
-      .catch(error => {
-        console.log('Error al cargar el ingreso:', error);
+      .catch((error) => {
+        console.log("Error al cargar el ingreso:", error);
       });
   }, [id]);
 
   useEffect(() => {
-    setIdArticulo(ingreso.id_articulo || '');
-    setFecha(ingreso.fecha_ingreso || '');
-    setNombreArticulo(ingreso.nombre_articulo || '');
+    setIdArticulo(ingreso.id_articulo || "");
+    setFecha(ingreso.fecha_ingreso || "");
+    setNombreArticulo(ingreso.nombre_articulo || "");
     setCantidad(ingreso.cantidad || 0);
     setCantidadOriginal(ingreso.cantidad || 0);
-    setMotivo(ingreso.motivo || '');
+    setMotivo(ingreso.motivo || "");
     setCostoUnitario(ingreso.costo_unitario || 0);
     setPrecioVenta(ingreso.precio || 0);
-    setComentarios(ingreso.comentarios || '');    
+    setComentarios(ingreso.comentarios || "");
   }, [ingreso]);
 
   useEffect(() => {
-    fetch('https://vivosis.vercel.app/api/producto/getallproductos')
-      .then(response => response.json())
-      .then(data => {
+    fetch("https://vivosis.vercel.app/api/producto/getallproductos")
+      .then((response) => response.json())
+      .then((data) => {
         setProductos(data);
       })
-      .catch(error => {
-        console.log('Error al obtener los productos:', error);
+      .catch((error) => {
+        console.log("Error al obtener los productos:", error);
       });
   }, []);
 
@@ -67,47 +67,46 @@ function ModificarIngreso() {
     const costoUnitarioFloat = parseFloat(costoUnitario);
     const cantidadFloat = parseFloat(cantidad);
     if (isNaN(costoUnitarioFloat) || isNaN(cantidadFloat)) {
-      return '';
+      return "";
     }
     return (costoUnitarioFloat * cantidadFloat).toFixed(2);
   };
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setMostrarMensaje(false);
   };
 
-  const handleFechaChange = event => {
+  const handleFechaChange = (event) => {
     setFecha(event.target.value);
   };
 
-  const handleNombreArticuloChange = event => {
+  const handleNombreArticuloChange = (event) => {
     setNombreArticulo(event.target.value);
   };
 
-  const handleCantidadChange = event => {
+  const handleCantidadChange = (event) => {
     const inputCantidad = event.target.value;
     setCantidad(inputCantidad);
   };
 
-  const handleMotivoChange = event => {
+  const handleMotivoChange = (event) => {
     setMotivo(event.target.value);
   };
 
-  const handleCostoUnitarioChange = event => {
+  const handleCostoUnitarioChange = (event) => {
     setCostoUnitario(event.target.value);
   };
 
-  const handlePrecioVentaChange = event => {
+  const handlePrecioVentaChange = (event) => {
     setPrecioVenta(event.target.value);
   };
 
-  const handleComentariosChange = event => {
+  const handleComentariosChange = (event) => {
     setComentarios(event.target.value);
   };
-
 
   const handleGuardar = () => {
     setGuardarHabilitado(false);
@@ -128,61 +127,64 @@ function ModificarIngreso() {
     };
 
     fetch(`https://vivosis.vercel.app/api/ingreso/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(ingresoModificado),
     })
-      .then(response => response.json())
-      .then(data => {
-        setMensaje('El ingreso ha sido actualizado');
+      .then((response) => response.json())
+      .then((data) => {
+        setMensaje("El ingreso ha sido actualizado");
         setMostrarMensaje(true);
 
         fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`, {
-          method: 'GET',
+          method: "GET",
         })
-          .then(response => response.json())
-          .then(producto => {
-            const fechaIngreso = fecha ? fecha : '';
+          .then((response) => response.json())
+          .then((producto) => {
+            const fechaIngreso = fecha ? fecha : "";
             const costoUnitarioFloat = parseFloat(costoUnitario);
             const precioVentaFloat = parseFloat(precioVenta);
-            
+
             producto.stock = producto.stock + diferenciaCantidad;
             producto.costo = costoUnitarioFloat;
             producto.precio = precioVentaFloat;
             producto.fecha_costo = fechaIngreso;
 
             fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`, {
-              method: 'PUT',
+              method: "PUT",
               headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
               },
-              body: JSON.stringify(producto)
+              body: JSON.stringify(producto),
             })
-              .then(response => response.json())
-              .then(updatedProducto => {
-                console.log('Producto actualizado:', updatedProducto);                                
+              .then((response) => response.json())
+              .then((updatedProducto) => {
                 setTimeout(() => {
                   navigate(`/veringresos`);
                 }, 800);
-
               })
-              .catch(error => {
-                console.log('Error al actualizar el producto:', error);
+              .catch((error) => {
+                console.log("Error al actualizar el producto:", error);
               });
           })
-          .catch(error => {
-            console.log('Error al obtener el producto:', error);
+          .catch((error) => {
+            console.log("Error al obtener el producto:", error);
           });
       })
-      .catch(error => {
-        console.log('Error al crear el ingreso:', error);
+      .catch((error) => {
+        console.log("Error al crear el ingreso:", error);
       });
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+    >
       <Card>
         <CardContent>
           <h2>Modificar Ingreso</h2>
@@ -211,7 +213,7 @@ function ModificarIngreso() {
               onChange={handleNombreArticuloChange}
               variant="outlined"
               margin="dense"
-             disabled
+              disabled
             />
             <br />
 
@@ -272,17 +274,28 @@ function ModificarIngreso() {
               disabled={!guardarHabilitado} // Nuevo atributo disabled
             />
             <br />
-            
           </form>
         </CardContent>
-        <CardActions style={{ justifyContent: 'center' }}>
+        <CardActions style={{ justifyContent: "center" }}>
           <Box sx={{ mx: 1 }}>
-            <Button variant="contained" color="primary" onClick={handleGuardar} disabled={!guardarHabilitado}> {/* Nuevo atributo disabled */}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleGuardar}
+              disabled={!guardarHabilitado}
+            >
+              {" "}
+              {/* Nuevo atributo disabled */}
               Guardar
             </Button>
           </Box>
           <Box sx={{ mx: 1 }}>
-            <Button variant="contained" color='error' component={Link} to="/veringresos">
+            <Button
+              variant="contained"
+              color="error"
+              component={Link}
+              to="/veringresos"
+            >
               Atrás
             </Button>
           </Box>

@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
-import { Link , useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Box from '@mui/material/Box';
-import Autocomplete from '@mui/material/Autocomplete';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Box from "@mui/material/Box";
+import Autocomplete from "@mui/material/Autocomplete";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 function CrearCliente() {
   const listaLocalidades = [
-    { value: 'AVELLANEDA', label: 'AVELLANEDA' },
-    { value: 'BERAZATEGUI', label: 'BERAZATEGUI' },
-    { value: 'CRUCE VARELA', label: 'CRUCE VARELA' },
-    { value: 'ENVIO CORREO', label: 'ENVIO CORREO' },
-    { value: 'ENVIO MENSAJERIA', label: 'ENVIO MENSAJERIA' },
-    { value: 'EZPELETA', label: 'EZPELETA' },
-    { value: 'LANUS', label: 'LANUS' },
-    { value: 'LOMAS', label: 'LOMAS' },
-    { value: 'QUILMES', label: 'QUILMES' },
-    { value: 'RETIRO EN DOMICILIO', label: 'RETIRO EN DOMICILIO' },
-    { value: 'SOLANO', label: 'SOLANO' },
-    { value: 'VARELA', label: 'VARELA' }
+    { value: "AVELLANEDA", label: "AVELLANEDA" },
+    { value: "BERAZATEGUI", label: "BERAZATEGUI" },
+    { value: "CRUCE VARELA", label: "CRUCE VARELA" },
+    { value: "ENVIO CORREO", label: "ENVIO CORREO" },
+    { value: "ENVIO MENSAJERIA", label: "ENVIO MENSAJERIA" },
+    { value: "EZPELETA", label: "EZPELETA" },
+    { value: "LANUS", label: "LANUS" },
+    { value: "LOMAS", label: "LOMAS" },
+    { value: "QUILMES", label: "QUILMES" },
+    { value: "RETIRO EN DOMICILIO", label: "RETIRO EN DOMICILIO" },
+    { value: "SOLANO", label: "SOLANO" },
+    { value: "VARELA", label: "VARELA" },
   ];
 
   const navigate = useNavigate();
-  const [nombre, setNombre] = useState('');
-  const [telefono, setTelefono] = useState('');
-  const [direccion, setDireccion] = useState('');
-  const [localidad, setLocalidad] = useState('');
-  const [estado, setEstado] = useState('ACTIVO');
-  const [usuario, setUsuario] = useState(localStorage.getItem('username'));
-  const [mensaje, setMensaje] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [localidad, setLocalidad] = useState("");
+  const [estado, setEstado] = useState("ACTIVO");
+  const [usuario, setUsuario] = useState(localStorage.getItem("username"));
+  const [mensaje, setMensaje] = useState("");
   const [mostrarMensaje, setMostrarMensaje] = useState(false);
   const [mensajeError, setMensajeError] = useState(false);
 
@@ -57,42 +57,40 @@ function CrearCliente() {
     setEstado(event.target.value);
   };
 
-
   const limpiarFormulario = () => {
-    setNombre('');
-    setTelefono('');
-    setDireccion('');
-    setLocalidad('');
-    setEstado('ACTIVO');
-    
+    setNombre("");
+    setTelefono("");
+    setDireccion("");
+    setLocalidad("");
+    setEstado("ACTIVO");
   };
 
   const handleGuardar = () => {
-    if (nombre.trim() === '') {
-      setMensaje('El campo Nombre es obligatorio');
+    if (nombre.trim() === "") {
+      setMensaje("El campo Nombre es obligatorio");
       setMensajeError(true);
       setMostrarMensaje(true);
       return;
     }
-  
+
     const nuevoCliente = {
       nombre,
       telefono,
       direccion,
       localidad,
       estado,
-      usuario
+      usuario,
     };
-    fetch('https://vivosis.vercel.app/api/cliente/', {
-      method: 'POST',
+    fetch("https://vivosis.vercel.app/api/cliente/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(nuevoCliente)
+      body: JSON.stringify(nuevoCliente),
     })
       .then((response) => response.json())
-      .then((data) => {        
-        setMensaje('¡Cliente creado con éxito!');
+      .then((data) => {
+        setMensaje("¡Cliente creado con éxito!");
         setMensajeError(false);
         setMostrarMensaje(true);
         limpiarFormulario();
@@ -101,13 +99,12 @@ function CrearCliente() {
         }, 800);
       })
       .catch((error) => {
-        console.log('Error al crear el cliente:', error);
+        console.log("Error al crear el cliente:", error);
       });
   };
-  
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setMostrarMensaje(false);
@@ -126,7 +123,7 @@ function CrearCliente() {
           <h2>Crear Cliente</h2>
           <form>
             <TextField
-              fullWidth 
+              fullWidth
               label="Nombre"
               value={nombre}
               onChange={handleNombreChange}
@@ -135,7 +132,7 @@ function CrearCliente() {
             />
             <br />
             <TextField
-              fullWidth 
+              fullWidth
               label="Teléfono"
               value={telefono}
               onChange={handleTelefonoChange}
@@ -153,8 +150,8 @@ function CrearCliente() {
             />
             <br />
             <Autocomplete
-                disableClearable={true}
-              fullWidth                                          
+              disableClearable={true}
+              fullWidth
               onChange={handleLocalidadChange}
               options={listaLocalidades}
               getOptionLabel={(option) => option.label}
@@ -169,7 +166,7 @@ function CrearCliente() {
             />
             <br />
             <TextField
-              fullWidth 
+              fullWidth
               label="Estado"
               value={estado}
               onChange={handleEstadoChange}
@@ -177,17 +174,27 @@ function CrearCliente() {
               margin="dense"
               disabled
             />
-            <br />            
+            <br />
           </form>
         </CardContent>
         <CardActions>
           <Box sx={{ mx: 0.25 }}>
-            <Button variant="contained" color="primary" onClick={handleGuardar} margin="dense">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleGuardar}
+              margin="dense"
+            >
               Guardar
             </Button>
           </Box>
           <Box sx={{ mx: 0.25 }}>
-            <Button variant="contained" color="secondary" onClick={limpiarFormulario} margin="dense">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={limpiarFormulario}
+              margin="dense"
+            >
               Limpiar
             </Button>
           </Box>
@@ -199,23 +206,22 @@ function CrearCliente() {
             </Link>
           </Box>
         </CardActions>
-        
+
         <Snackbar
           open={mostrarMensaje}
           autoHideDuration={3000}
           onClose={handleSnackbarClose}
-             >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={handleSnackbarClose}
-          severity={mensajeError ? "error" : "success"}
         >
-          {mensaje}
-        </MuiAlert>
-      </Snackbar>
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            onClose={handleSnackbarClose}
+            severity={mensajeError ? "error" : "success"}
+          >
+            {mensaje}
+          </MuiAlert>
+        </Snackbar>
       </Card>
-
     </Box>
   );
 }

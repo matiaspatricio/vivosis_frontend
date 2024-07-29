@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Typography, TextField, Button, Grid, Link, Paper, Avatar, Alert } from "@mui/material";
+import {
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Link,
+  Paper,
+  Avatar,
+  Alert,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -14,16 +23,19 @@ const AuthForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://vivosis.vercel.app/api/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://vivosis.vercel.app/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
 
       const { token } = response.data;
       const { username } = response.data.user;
-      
-      localStorage.setItem('token', token); // Guardar el token en el localStorage
-      localStorage.setItem('username',username);
+
+      localStorage.setItem("token", token); // Guardar el token en el localStorage
+      localStorage.setItem("username", username);
       //Cookies.set('token', token, { expires: 7 }); // La cookie expirará después de 7 días
       //const token = Cookies.get('token'); // Obtener el token de la cookie
 
@@ -37,7 +49,7 @@ const AuthForm = () => {
     } catch (error) {
       console.log("Error en el inicio de sesión:", error);
     }
-  };  
+  };
   return (
     <Grid container justifyContent="center">
       <Grid item xs={12} sm={8} md={6} lg={4}>

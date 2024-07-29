@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Typography, TextField, Button, Grid, Link, Paper, Avatar } from "@mui/material";
+import {
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Link,
+  Paper,
+  Avatar,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axios from "axios";
 
@@ -44,7 +52,7 @@ const Register = () => {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <form onSubmit={handleRegister}>                
+              <form onSubmit={handleRegister}>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -115,7 +123,7 @@ const Register = () => {
                   sx={{ marginTop: "1rem" }}
                 >
                   Register
-                </Button>                
+                </Button>
               </form>
             </Grid>
           </Grid>

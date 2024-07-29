@@ -1,92 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Box from '@mui/material/Box';
-import MenuItem from '@mui/material/MenuItem';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Box from "@mui/material/Box";
+import MenuItem from "@mui/material/MenuItem";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 function CrearProducto() {
   const navigate = useNavigate();
-  const [nombre, setNombre] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [subcategoria, setSubcategoria] = useState('');
-  const [precio, setPrecio] = useState('');
-  const [costo, setCosto] = useState('');
-  const [stock, setStock] = useState('');
-  const [comentarios, setComentarios] = useState('');
-  const [usuario, setUsuario] = useState(localStorage.getItem('username'));
-  const [mensaje, setMensaje] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [subcategoria, setSubcategoria] = useState("");
+  const [precio, setPrecio] = useState("");
+  const [costo, setCosto] = useState("");
+  const [stock, setStock] = useState("");
+  const [comentarios, setComentarios] = useState("");
+  const [usuario, setUsuario] = useState(localStorage.getItem("username"));
+  const [mensaje, setMensaje] = useState("");
   const [categorias, setCategorias] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
   const [mostrarMensaje, setMostrarMensaje] = useState(false);
   const [mensajeError, setMensajeError] = useState(false);
 
   useEffect(() => {
-    fetch('https://vivosis.vercel.app/api/categoria/getallcategorias')
-      .then(response => response.json())
-      .then(data => {
+    fetch("https://vivosis.vercel.app/api/categoria/getallcategorias")
+      .then((response) => response.json())
+      .then((data) => {
         setCategorias(data);
       })
-      .catch(error => {
-        console.log('Error al obtener las categorías:', error);
+      .catch((error) => {
+        console.log("Error al obtener las categorías:", error);
       });
   }, []);
 
-  const handleNombreChange = event => {
+  const handleNombreChange = (event) => {
     setNombre(event.target.value);
   };
 
-  const handleCategoriaChange = event => {
+  const handleCategoriaChange = (event) => {
     const selectedCategoria = event.target.value;
     setCategoria(selectedCategoria);
 
-    const selectedCategoriaObj = categorias.find(c => c._id === selectedCategoria);
+    const selectedCategoriaObj = categorias.find(
+      (c) => c._id === selectedCategoria
+    );
     if (selectedCategoriaObj) {
       setSubcategorias(selectedCategoriaObj.subcategorias);
     }
   };
 
-  const handleSubcategoriaChange = event => {
-    
+  const handleSubcategoriaChange = (event) => {
     setSubcategoria(event.target.value);
   };
 
-  const handlePrecioChange = event => {
+  const handlePrecioChange = (event) => {
     setPrecio(event.target.value);
   };
 
-  const handleCostoChange = event => {
+  const handleCostoChange = (event) => {
     setCosto(event.target.value);
   };
 
-  const handleStockChange = event => {
+  const handleStockChange = (event) => {
     setStock(event.target.value);
   };
 
-  const handleComentariosChange = event => {
+  const handleComentariosChange = (event) => {
     setComentarios(event.target.value);
   };
 
-
-
   const limpiarFormulario = () => {
-    setNombre('');
-    setCategoria('');
-    setSubcategoria('');
-    setPrecio('');
-    setCosto('');
-    setStock('');
-    setComentarios('');
-    
+    setNombre("");
+    setCategoria("");
+    setSubcategoria("");
+    setPrecio("");
+    setCosto("");
+    setStock("");
+    setComentarios("");
   };
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setMostrarMensaje(false);
@@ -96,38 +94,44 @@ function CrearProducto() {
   const handleGuardar = () => {
     // Verificar si el nombre, la categoría y la subcategoría están presentes
     if (!nombre.trim() || !categoria || !subcategoria) {
-      setMensaje('Complete al menos el nombre, la categoría y la subcategoría');
+      setMensaje("Complete al menos el nombre, la categoría y la subcategoría");
       setMensajeError(true);
       setMostrarMensaje(true);
       return;
     }
 
-      // Obtener los nombres de la categoría y subcategoría seleccionadas
-      const categoriaSeleccionada = categorias.find(c => c._id === categoria);
-      const subcategoriaSeleccionada = subcategorias.find(s => s._id === subcategoria);
-      const nombreCategoria = categoriaSeleccionada ? categoriaSeleccionada.nombre : '';
-      const nombreSubcategoria = subcategoriaSeleccionada ? subcategoriaSeleccionada.nombre : '';
+    // Obtener los nombres de la categoría y subcategoría seleccionadas
+    const categoriaSeleccionada = categorias.find((c) => c._id === categoria);
+    const subcategoriaSeleccionada = subcategorias.find(
+      (s) => s._id === subcategoria
+    );
+    const nombreCategoria = categoriaSeleccionada
+      ? categoriaSeleccionada.nombre
+      : "";
+    const nombreSubcategoria = subcategoriaSeleccionada
+      ? subcategoriaSeleccionada.nombre
+      : "";
 
-      const nuevoProducto = {
-        nombre,
-        categoria: nombreCategoria,
-        subcategoria: nombreSubcategoria,
-        precio,
-        costo,
-        stock,
-        comentarios,
-        usuario
-};
-    fetch('https://vivosis.vercel.app/api/producto/', {
-      method: 'POST',
+    const nuevoProducto = {
+      nombre,
+      categoria: nombreCategoria,
+      subcategoria: nombreSubcategoria,
+      precio,
+      costo,
+      stock,
+      comentarios,
+      usuario,
+    };
+    fetch("https://vivosis.vercel.app/api/producto/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(nuevoProducto)
+      body: JSON.stringify(nuevoProducto),
     })
-      .then(response => response.json())
-      .then(data => {
-        setMensaje('¡Producto creado con éxito!');
+      .then((response) => response.json())
+      .then((data) => {
+        setMensaje("¡Producto creado con éxito!");
         setMensajeError(false);
         setMostrarMensaje(true);
         limpiarFormulario();
@@ -135,8 +139,8 @@ function CrearProducto() {
           navigate(`/verproductos`);
         }, 800);
       })
-      .catch(error => {
-        console.log('Error al crear el producto:', error);
+      .catch((error) => {
+        console.log("Error al crear el producto:", error);
       });
   };
 
@@ -169,7 +173,7 @@ function CrearProducto() {
               margin="dense"
               select
             >
-              {categorias.map(c => (
+              {categorias.map((c) => (
                 <MenuItem key={c._id} value={c._id}>
                   {c.nombre}
                 </MenuItem>
@@ -185,7 +189,7 @@ function CrearProducto() {
               margin="dense"
               select
             >
-              {subcategorias.map(s => (
+              {subcategorias.map((s) => (
                 <MenuItem key={s._id} value={s._id}>
                   {s.nombre}
                 </MenuItem>
@@ -230,17 +234,26 @@ function CrearProducto() {
               multiline
             />
             <br />
-            
           </form>
         </CardContent>
         <CardActions>
           <Box sx={{ mx: 0.25 }}>
-            <Button variant="contained" color="primary" onClick={handleGuardar} margin="dense">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleGuardar}
+              margin="dense"
+            >
               Guardar
             </Button>
           </Box>
           <Box sx={{ mx: 0.25 }}>
-            <Button variant="contained" color="secondary" onClick={limpiarFormulario} margin="dense">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={limpiarFormulario}
+              margin="dense"
+            >
               Limpiar
             </Button>
           </Box>
@@ -257,16 +270,16 @@ function CrearProducto() {
           open={mostrarMensaje}
           autoHideDuration={3000}
           onClose={handleSnackbarClose}
-             >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={handleSnackbarClose}
-          severity={mensajeError ? "error" : "success"}
         >
-          {mensaje}
-        </MuiAlert>
-      </Snackbar>
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            onClose={handleSnackbarClose}
+            severity={mensajeError ? "error" : "success"}
+          >
+            {mensaje}
+          </MuiAlert>
+        </Snackbar>
       </Card>
     </Box>
   );

@@ -1,13 +1,9 @@
-import React from 'react';
+import React from "react";
 
 const Blanco = () => {
-    const usuario = 'cgimenez';
+  const usuario = "cgimenez";
 
-    return (
-        <div>
-            
-        </div>
-    );
+  return <div></div>;
 };
 
 export default Blanco;

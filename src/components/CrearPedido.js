@@ -1,84 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Box from '@mui/material/Box';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import { DatePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { format, compareAsc  } from 'date-fns'
-import utcToZonedTime from 'date-fns-tz/utcToZonedTime'
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Box from "@mui/material/Box";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { format, compareAsc } from "date-fns";
+import utcToZonedTime from "date-fns-tz/utcToZonedTime";
+import Typography from "@mui/material/Typography";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme) => ({
+  blocked: {
+    color: "red",
+  },
+}));
 
 function CrearPedido() {
+  const classes = useStyles();
   const navigate = useNavigate();
-  
+
   const [clientes, setClientes] = useState([]);
   const [articulos, setArticulos] = useState([]);
 
-  const [idCliente, setIdCliente] = useState('');
-  const [nombreCliente, setNombreCliente] = useState('');  
-  const [idArticulo, setIdArticulo] = useState('');
-  const [nombreArticulo, setNombreArticulo] = useState('');  
+  const [idCliente, setIdCliente] = useState("");
+  const [nombreCliente, setNombreCliente] = useState("");
+  const [idArticulo, setIdArticulo] = useState("");
+  const [nombreArticulo, setNombreArticulo] = useState("");
   const [cantidad, setCantidad] = useState(1);
   const [precio, setPrecio] = useState(0);
   const [total, setTotal] = useState(0);
   const [costo, setCosto] = useState(0);
-  const [estadoPedido, setEstadoPedido] = useState('PENDIENTE');
-  const [estadoPago, setEstadoPago] = useState('PENDIENTE');
+  const [estadoPedido, setEstadoPedido] = useState("PENDIENTE");
+  const [estadoPago, setEstadoPago] = useState("PENDIENTE");
   const [fechaEntrega, setFechaEntrega] = useState(null);
-  const [comentarios, setComentarios] = useState('');
-  const [usuario, setUsuario] = useState(localStorage.getItem('username'));  
-  
-  const [mensaje, setMensaje] = useState('');
+  const [comentarios, setComentarios] = useState("");
+  const [usuario, setUsuario] = useState(localStorage.getItem("username"));
+
+  const [mensaje, setMensaje] = useState("");
   const [mostrarMensaje, setMostrarMensaje] = useState(false);
   const [mensajeError, setMensajeError] = useState(false);
-  const [valorLocalidad, setValorLocalidad] = useState('');
+  const [valorLocalidad, setValorLocalidad] = useState("");
 
-  const [listaClientes, setListaClientes] = useState('');
-
-
+  const [listaClientes, setListaClientes] = useState("");
 
   const listaLocalidades = [
-    { value: '', label: 'VACIO' },
-    { value: 'AVELLANEDA', label: 'AVELLANEDA' },
-    { value: 'BERAZATEGUI', label: 'BERAZATEGUI' },
-    { value: 'CRUCE VARELA', label: 'CRUCE VARELA' },
-    { value: 'ENVIO CORREO', label: 'ENVIO CORREO' },
-    { value: 'ENVIO MENSAJERIA', label: 'ENVIO MENSAJERIA' },
-    { value: 'EZPELETA', label: 'EZPELETA' },
-    { value: 'LANUS', label: 'LANUS' },
-    { value: 'LOMAS', label: 'LOMAS' },
-    { value: 'QUILMES', label: 'QUILMES' },
-    { value: 'RETIRO EN DOMICILIO', label: 'RETIRO EN DOMICILIO' },
-    { value: 'SOLANO', label: 'SOLANO' },
-    { value: 'VARELA', label: 'VARELA' }
+    { value: "", label: "VACIO" },
+    { value: "AVELLANEDA", label: "AVELLANEDA" },
+    { value: "BERAZATEGUI", label: "BERAZATEGUI" },
+    { value: "CRUCE VARELA", label: "CRUCE VARELA" },
+    { value: "ENVIO CORREO", label: "ENVIO CORREO" },
+    { value: "ENVIO MENSAJERIA", label: "ENVIO MENSAJERIA" },
+    { value: "EZPELETA", label: "EZPELETA" },
+    { value: "LANUS", label: "LANUS" },
+    { value: "LOMAS", label: "LOMAS" },
+    { value: "QUILMES", label: "QUILMES" },
+    { value: "RETIRO EN DOMICILIO", label: "RETIRO EN DOMICILIO" },
+    { value: "SOLANO", label: "SOLANO" },
+    { value: "VARELA", label: "VARELA" },
   ];
 
   useEffect(() => {
-    fetch('https://vivosis.vercel.app/api/cliente/getallclientes')
-      .then(response => response.json())
-      .then(data => {
-        const sortedClientes = data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    fetch("https://vivosis.vercel.app/api/cliente/getallclientes")
+      .then((response) => response.json())
+      .then((data) => {
+        const sortedClientes = data.sort((a, b) =>
+          a.nombre.localeCompare(b.nombre)
+        );
         setClientes(sortedClientes);
       })
-      .catch(error => {
-        console.log('Error al obtener los clientes:', error);
+      .catch((error) => {
+        console.log("Error al obtener los clientes:", error);
       });
 
-    fetch('https://vivosis.vercel.app/api/producto/getallproductos')
-      .then(response => response.json())
-      .then(data => {
+    fetch("https://vivosis.vercel.app/api/producto/getallproductos")
+      .then((response) => response.json())
+      .then((data) => {
         setArticulos(data);
       })
-      .catch(error => {
-        console.log('Error al obtener los productos:', error);
+      .catch((error) => {
+        console.log("Error al obtener los productos:", error);
       });
   }, []);
 
@@ -87,28 +96,27 @@ function CrearPedido() {
     setTotal(nuevoTotal);
   }, [cantidad, precio]);
 
-  const fetchPrecioProducto = productId => {
+  const fetchPrecioProducto = (productId) => {
     fetch(`https://vivosis.vercel.app/api/producto/${productId}`)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setPrecio(data.precio);
         setCosto(data.costo);
       })
-      .catch(error => {
-        console.log('Error al obtener el precio del producto:', error);
+      .catch((error) => {
+        console.log("Error al obtener el precio del producto:", error);
       });
   };
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setMostrarMensaje(false);
     setMensajeError(false);
   };
 
-
   const handleKeyDown = (event) => {
-    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       event.preventDefault();
     }
   };
@@ -117,26 +125,27 @@ function CrearPedido() {
     if (value) {
       setIdCliente(value._id);
       setNombreCliente(value.nombre);
+      setValorLocalidad(value.localidad ? value.localidad : "");
     } else {
-      setIdCliente('');
-      setNombreCliente('');
+      setIdCliente("");
+      setNombreCliente("");
+      setValorLocalidad("");
     }
   };
 
-  
   const handleNombreArticuloChange = (event, value) => {
     if (value) {
       setIdArticulo(value._id);
       setNombreArticulo(value.nombre);
       fetchPrecioProducto(value._id);
     } else {
-      setIdArticulo('');
-      setNombreArticulo('');
+      setIdArticulo("");
+      setNombreArticulo("");
       setPrecio(0);
     }
   };
-  
-  const handleCantidadChange = event => {
+
+  const handleCantidadChange = (event) => {
     const value = parseInt(event.target.value);
     if (isNaN(value) || value < 0) {
       setCantidad(0);
@@ -144,8 +153,8 @@ function CrearPedido() {
       setCantidad(value);
     }
   };
-  
-  const handlePrecioChange = event => {
+
+  const handlePrecioChange = (event) => {
     const value = parseFloat(event.target.value);
     if (isNaN(value) || value < 0) {
       setPrecio(0);
@@ -153,8 +162,8 @@ function CrearPedido() {
       setPrecio(value);
     }
   };
-  
-  const handleTotalChange = event => {
+
+  const handleTotalChange = (event) => {
     const value = parseFloat(event.target.value);
     if (isNaN(value) || value < 0) {
       setTotal(0);
@@ -162,8 +171,8 @@ function CrearPedido() {
       setTotal(value);
     }
   };
-  
-  const handleCostoChange = event => {
+
+  const handleCostoChange = (event) => {
     const value = parseFloat(event.target.value);
     if (isNaN(value) || value < 0) {
       setCosto(0);
@@ -171,78 +180,85 @@ function CrearPedido() {
       setCosto(value);
     }
   };
-  
 
-  const handleFechaEntregaChange = newValue => {
+  const filterOptions = (options, { inputValue }) => {
+    console.log("options:", options);
+    const filteredOptions = options.filter(option =>
+      option.nombre.toLowerCase().includes(inputValue.toLowerCase())
+    );
+    console.log('Filtered Options:', filteredOptions);
+    return filteredOptions;
+  };
+
+  const handleFechaEntregaChange = (newValue) => {
     setFechaEntrega(newValue);
   };
-  const handleComentariosChange = event => {
+  const handleComentariosChange = (event) => {
     setComentarios(event.target.value);
   };
   const handleLocalidadChange = (event, value) => {
-    setValorLocalidad(value ? value.value : ''); // Guardar el valor seleccionado en valorLocalidad
+    setValorLocalidad(value ? value.value : ""); // Guardar el valor seleccionado en valorLocalidad
   };
-  const limpiarFormulario = () => {    
-    setIdCliente('');
-    setNombreCliente('');
-    setIdArticulo('');
-    setNombreArticulo('');
+  const limpiarFormulario = () => {
+    setIdCliente("");
+    setNombreCliente("");
+    setIdArticulo("");
+    setNombreArticulo("");
     setCantidad(1);
     setPrecio(0);
     setTotal(0);
     setCosto(0);
-    
+
     setFechaEntrega(null);
-    setComentarios('');
-    
-    setValorLocalidad('');
+    setComentarios("");
+
+    setValorLocalidad("");
   };
 
   const actualizarStockProducto = (productId, quantity) => {
     fetch(`https://vivosis.vercel.app/api/producto/${productId}`, {
-      method: 'GET'
+      method: "GET",
     })
-      .then(response => response.json())
-      .then(producto => {
+      .then((response) => response.json())
+      .then((producto) => {
         producto.stock -= quantity;
 
         fetch(`https://vivosis.vercel.app/api/producto/${productId}`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(producto)
+          body: JSON.stringify(producto),
         })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Stock del producto actualizado:', data);
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Stock del producto actualizado:", data);
           })
-          .catch(error => {
-            console.log('Error al actualizar el stock del producto:', error);
+          .catch((error) => {
+            console.log("Error al actualizar el stock del producto:", error);
           });
       })
-      .catch(error => {
-        console.log('Error al obtener el producto:', error);
+      .catch((error) => {
+        console.log("Error al obtener el producto:", error);
       });
   };
 
   const handleGuardar = () => {
-    if (nombreCliente.trim() === '' || nombreArticulo.trim() === '' || cantidad === 0) {
-      setMensaje('El Articulo y cantidad son obligatorios');
+    if (
+      nombreCliente.trim() === "" ||
+      nombreArticulo.trim() === "" ||
+      cantidad === 0
+    ) {
+      setMensaje("El Articulo y cantidad son obligatorios");
       setMensajeError(true);
       setMostrarMensaje(true);
       return;
     }
 
     const fechaActualUTC = new Date();
-    const zonaHoraria = 'America/Argentina/Buenos_Aires';
+    const zonaHoraria = "America/Argentina/Buenos_Aires";
     const fechaActual = utcToZonedTime(fechaActualUTC, zonaHoraria);
-    const formattedFecha = format(fechaActual, 'yyyy-MM-dd\'T\'HH:mm:ss.SSSxxx');
-    
-    
-    
-    
-    
+    const formattedFecha = format(fechaActual, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
     const nuevoPedido = {
       fecha: formattedFecha,
@@ -259,21 +275,19 @@ function CrearPedido() {
       fecha_entrega: fechaEntrega ? new Date(fechaEntrega) : null,
       comentarios: comentarios,
       usuario: usuario,
-      localidad: valorLocalidad // Usar valorLocalidad en lugar de localidad
+      localidad: valorLocalidad, // Usar valorLocalidad en lugar de localidad
     };
 
-    
-
-    fetch('https://vivosis.vercel.app/api/pedido/', {
-      method: 'POST',
+    fetch("https://vivosis.vercel.app/api/pedido/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(nuevoPedido)
+      body: JSON.stringify(nuevoPedido),
     })
-      .then(response => response.json())
-      .then(data => {
-        setMensaje('¡Pedido creado con éxito!');
+      .then((response) => response.json())
+      .then((data) => {
+        setMensaje("¡Pedido creado con éxito!");
         setMensajeError(false);
         setMostrarMensaje(true);
 
@@ -285,10 +299,22 @@ function CrearPedido() {
           navigate(`/verpedidos`);
         }, 800);*/
       })
-      .catch(error => {
-        console.log('Error al crear el pedido:', error);
+      .catch((error) => {
+        console.log("Error al crear el pedido:", error);
       });
   };
+
+  const clientesOrdenados = [...clientes].sort((a, b) => {
+    if (a.estado === "BLOQUEADO" && b.estado !== "BLOQUEADO") return 1;
+    if (a.estado !== "BLOQUEADO" && b.estado === "BLOQUEADO") return -1;
+    return a.nombre.localeCompare(b.nombre);
+  });
+
+  const articulosOrdenados = [...articulos].sort((a, b) => {
+    if (a.estado === "BLOQUEADO" && b.estado !== "BLOQUEADO") return 1;
+    if (a.estado !== "BLOQUEADO" && b.estado === "BLOQUEADO") return -1;
+    return a.nombre.localeCompare(b.nombre);
+  });
 
   return (
     <Box
@@ -298,18 +324,19 @@ function CrearPedido() {
       minHeight="100vh"
       margin={2}
     >
-      <Card> 
+      <Card>
         <CardContent>
           <h2>Crear Pedido</h2>
           <form>
-
             <Autocomplete
               disablePortal
-              options={clientes}
-              getOptionLabel={option => (option.nombre ? option.nombre : '')}
-              value={nombreCliente ? { id: idCliente, nombre: nombreCliente } : null}
+              options={clientesOrdenados}
+              getOptionLabel={(option) => (option.nombre ? option.nombre : "")}
+              value={
+                nombreCliente ? { id: idCliente, nombre: nombreCliente } : null
+              }
               onChange={handleIdClienteChange}
-              renderInput={params => (
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Nombre del cliente"
@@ -317,14 +344,32 @@ function CrearPedido() {
                   margin="dense"
                 />
               )}
-              enabled
+              renderOption={(props, option) => (
+                <li {...props}>
+                  <Typography
+                    className={
+                      option.estado === "BLOQUEADO" ? classes.blocked : ""
+                    }
+                  >
+                    {option.nombre}{" "}
+                    {option.estado === "BLOQUEADO" && "(BLOQUEADO)"}
+                  </Typography>
+                </li>
+              )}
             />
             <Autocomplete
-              options={articulos}
-              getOptionLabel={option => (option.nombre ? option.nombre : '')}
-              value={nombreArticulo ? { id: idArticulo, nombre: nombreArticulo } : null}
+              disablePortal
+              options={articulosOrdenados}
+              getOptionLabel={(option) => (option.nombre ? option.nombre : "")}
+              value={
+                nombreArticulo
+                  ? { id: idArticulo, nombre: nombreArticulo }
+                  : null
+              }
               onChange={handleNombreArticuloChange}
-              renderInput={params => (
+              isOptionEqualToValue={(option, value) => option._id === value._id}
+              filterOptions={filterOptions}
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Nombre del artículo"
@@ -332,9 +377,20 @@ function CrearPedido() {
                   margin="dense"
                 />
               )}
-              enabled
+              renderOption={(props, option) => (
+                <li {...props}>
+                  <Typography
+                    className={
+                      option.estado === "BLOQUEADO" ? classes.blocked : ""
+                    }
+                  >
+                    {option.nombre}{" "}
+                    {option.estado === "BLOQUEADO" && "(BLOQUEADO)"}
+                  </Typography>
+                </li>
+              )}
             />
-            <br />    
+            <br />
             <TextField
               fullWidth
               label="Cantidad"
@@ -346,7 +402,7 @@ function CrearPedido() {
               onKeyDown={handleKeyDown}
               onWheel={(e) => e.target.blur()}
             />
-            <br />    
+            <br />
             <TextField
               fullWidth
               label="Precio"
@@ -358,7 +414,7 @@ function CrearPedido() {
               onKeyDown={handleKeyDown}
               onWheel={(e) => e.target.blur()}
             />
-              <br />    
+            <br />
             <TextField
               fullWidth
               label="Total"
@@ -369,7 +425,7 @@ function CrearPedido() {
               margin="dense"
               disabled
             />
-            <br />    
+            <br />
             <TextField
               fullWidth
               label="Costo"
@@ -380,28 +436,28 @@ function CrearPedido() {
               margin="dense"
               disabled
             />
-            <br />            
+            <br />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker              
+              <DatePicker
                 label="Fecha de entrega"
                 value={fechaEntrega}
                 onChange={handleFechaEntregaChange}
-                renderInput={params => (
-                  <TextField                    
-                    {...params}
-                    margin="dense"
-                    variant="outlined"
-                  />
+                renderInput={(params) => (
+                  <TextField {...params} margin="dense" variant="outlined" />
                 )}
               />
             </LocalizationProvider>
             <br />
             <Autocomplete
               options={listaLocalidades}
-              getOptionLabel={option => option.label}
-              value={listaLocalidades.find(localidad => localidad.value === valorLocalidad) || ''}
+              getOptionLabel={(option) => option.label}
+              value={
+                listaLocalidades.find(
+                  (localidad) => localidad.value === valorLocalidad
+                ) || ""
+              }
               onChange={handleLocalidadChange}
-              renderInput={params => (
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Localidad"
@@ -423,17 +479,26 @@ function CrearPedido() {
               rows={4}
             />
             <br />
-            
           </form>
         </CardContent>
         <CardActions>
           <Box sx={{ mx: 0.25 }}>
-            <Button variant="contained" color="primary" onClick={handleGuardar} margin="dense">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleGuardar}
+              margin="dense"
+            >
               Guardar
             </Button>
           </Box>
           <Box sx={{ mx: 0.25 }}>
-            <Button variant="contained" color="secondary" onClick={limpiarFormulario} margin="dense">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={limpiarFormulario}
+              margin="dense"
+            >
               Limpiar
             </Button>
           </Box>
@@ -454,7 +519,7 @@ function CrearPedido() {
             elevation={6}
             variant="filled"
             onClose={handleSnackbarClose}
-            severity={mensajeError ? 'error' : 'success'}
+            severity={mensajeError ? "error" : "success"}
           >
             {mensaje}
           </MuiAlert>

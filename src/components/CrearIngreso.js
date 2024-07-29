@@ -1,171 +1,171 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Box from '@mui/material/Box';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import Autocomplete from '@mui/material/Autocomplete';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Box from "@mui/material/Box";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Autocomplete from "@mui/material/Autocomplete";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 
 function CrearIngreso() {
   const navigate = useNavigate();
-  const [fecha, setFecha] = useState('');
-  const [idArticulo, setIdArticulo] = useState('');
-  const [nombreArticulo, setNombreArticulo] = useState('');
-  const [cantidad, setCantidad] = useState('');
-  const [motivo, setMotivo] = useState('');
-  const [costoUnitario, setCostoUnitario] = useState('');
-  const [precioVenta, setPrecioVenta] = useState('');
-  const [comentarios, setComentarios] = useState('');
-  const [usuario, setUsuario] = useState(localStorage.getItem('username'));
-  const [mensaje, setMensaje] = useState('');
+  const [fecha, setFecha] = useState("");
+  const [idArticulo, setIdArticulo] = useState("");
+  const [nombreArticulo, setNombreArticulo] = useState("");
+  const [cantidad, setCantidad] = useState("");
+  const [motivo, setMotivo] = useState("");
+  const [costoUnitario, setCostoUnitario] = useState("");
+  const [precioVenta, setPrecioVenta] = useState("");
+  const [comentarios, setComentarios] = useState("");
+  const [usuario, setUsuario] = useState(localStorage.getItem("username"));
+  const [mensaje, setMensaje] = useState("");
   const [mostrarMensaje, setMostrarMensaje] = useState(false);
   const [productos, setProductos] = useState([]);
   const [selectedFechaIngreso, setSelectedFechaIngreso] = useState(null);
   const [mensajeError, setMensajeError] = useState(false);
 
   useEffect(() => {
-    fetch('https://vivosis.vercel.app/api/producto/getallproductos')
-      .then(response => response.json())
-      .then(data => {
+    fetch("https://vivosis.vercel.app/api/producto/getallproductos")
+      .then((response) => response.json())
+      .then((data) => {
         setProductos(data);
       })
-      .catch(error => {
-        console.log('Error al obtener los productos:', error);
+      .catch((error) => {
+        console.log("Error al obtener los productos:", error);
       });
   }, []);
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setMostrarMensaje(false);
   };
 
-  const handleFechaChange = newValue => {    
-    setFecha(newValue.value); 
-    alert(newValue.value);   
+  const handleFechaChange = (newValue) => {
+    setFecha(newValue.value);
+    alert(newValue.value);
   };
 
-  const handleIdArticuloChange = event => {
+  const handleIdArticuloChange = (event) => {
     setIdArticulo(event.target.value);
   };
 
   const handleNombreArticuloChange = (event, value) => {
-    setNombreArticulo(value?.nombre || '');
-    setIdArticulo(value?._id || '');
-    setCostoUnitario(value?.costo || '');
-    setPrecioVenta(value?.precio || '');
+    setNombreArticulo(value?.nombre || "");
+    setIdArticulo(value?._id || "");
+    setCostoUnitario(value?.costo || "");
+    setPrecioVenta(value?.precio || "");
   };
 
-  const handleCantidadChange = event => {
+  const handleCantidadChange = (event) => {
     const input = event.target.value;
     if (/^\d*$/.test(input)) {
       setCantidad(input);
     }
   };
 
-  const handleMotivoChange = event => {
+  const handleMotivoChange = (event) => {
     setMotivo(event.target.value);
   };
 
-  const handleCostoUnitarioChange = event => {
+  const handleCostoUnitarioChange = (event) => {
     const input = event.target.value;
     if (/^\d*(\.\d{0,2})?$/.test(input)) {
       setCostoUnitario(input);
     }
   };
 
-  const handlePrecioVentaChange = event => {
+  const handlePrecioVentaChange = (event) => {
     const input = event.target.value;
     if (/^\d*(\.\d{0,2})?$/.test(input)) {
       setPrecioVenta(input);
     }
   };
 
-  const handleComentariosChange = event => {
+  const handleComentariosChange = (event) => {
     setComentarios(event.target.value);
   };
-
 
   const calcularTotal = () => {
     const costoUnitarioFloat = parseFloat(costoUnitario);
     const cantidadFloat = parseFloat(cantidad);
     if (isNaN(costoUnitarioFloat) || isNaN(cantidadFloat)) {
-      return '';
+      return "";
     }
     return (costoUnitarioFloat * cantidadFloat).toFixed(2);
   };
 
   const limpiarFormulario = () => {
-    setFecha('');
-    setIdArticulo('');
-    setNombreArticulo('');
-    setCantidad('');
-    setMotivo('');
-    setCostoUnitario('');
-    setPrecioVenta('');
-    setComentarios('');
-    
+    setFecha("");
+    setIdArticulo("");
+    setNombreArticulo("");
+    setCantidad("");
+    setMotivo("");
+    setCostoUnitario("");
+    setPrecioVenta("");
+    setComentarios("");
   };
 
-  const handleFechaIngresoChange = newValue => {
+  const handleFechaIngresoChange = (newValue) => {
     setSelectedFechaIngreso(newValue);
   };
 
   const handleGuardar = () => {
     if (
-      idArticulo.trim() === '' ||
-      cantidad === '' ||
-      costoUnitario === '' ||
-      precioVenta === ''
+      idArticulo.trim() === "" ||
+      cantidad === "" ||
+      costoUnitario === "" ||
+      precioVenta === ""
     ) {
-      setMensaje('El Articulo, cantidad, costo y precio son obligatorios');
+      setMensaje("El Articulo, cantidad, costo y precio son obligatorios");
       setMensajeError(true);
       setMostrarMensaje(true);
       return;
     }
     const nuevoIngreso = {
-      fecha_ingreso: selectedFechaIngreso ? selectedFechaIngreso.format('DD/MM/YYYY') : '',
+      fecha_ingreso: selectedFechaIngreso
+        ? selectedFechaIngreso.format("DD/MM/YYYY")
+        : "",
       id_articulo: idArticulo,
       nombre_articulo: nombreArticulo,
       cantidad,
-      costo_unitario: costoUnitario,      
+      costo_unitario: costoUnitario,
       precio: precioVenta,
-      total: cantidad * costoUnitario,      
+      total: cantidad * costoUnitario,
       motivo,
       comentarios,
-      usuario: usuario
-
+      usuario: usuario,
     };
-    fetch('https://vivosis.vercel.app/api/ingreso/', {
-      method: 'POST',
+    fetch("https://vivosis.vercel.app/api/ingreso/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(nuevoIngreso)
+      body: JSON.stringify(nuevoIngreso),
     })
-      .then(response => response.json())
-      .then(data => {
-        
-        setMensaje('¡Ingreso creado con éxito!');
+      .then((response) => response.json())
+      .then((data) => {
+        setMensaje("¡Ingreso creado con éxito!");
         setMensajeError(false);
         setMostrarMensaje(true);
         limpiarFormulario();
 
         // Actualizar el producto con el costo, precio y fecha de último ingreso
         fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`, {
-          method: 'GET',
+          method: "GET",
         })
-          .then(response => response.json())
-          .then(producto => {
-            const fechaIngreso = selectedFechaIngreso ? selectedFechaIngreso.format('DD/MM/YYYY') : '';
+          .then((response) => response.json())
+          .then((producto) => {
+            const fechaIngreso = selectedFechaIngreso
+              ? selectedFechaIngreso.format("DD/MM/YYYY")
+              : "";
             const costoUnitarioFloat = parseFloat(costoUnitario);
             const precioVentaFloat = parseFloat(precioVenta);
 
@@ -177,29 +177,28 @@ function CrearIngreso() {
 
             // Enviar la solicitud para actualizar el producto
             fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`, {
-              method: 'PUT',
+              method: "PUT",
               headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
               },
-              body: JSON.stringify(producto)
+              body: JSON.stringify(producto),
             })
-              .then(response => response.json())
-              .then(updatedProducto => {
-                console.log('Producto actualizado:', updatedProducto);
+              .then((response) => response.json())
+              .then((updatedProducto) => {
                 setTimeout(() => {
                   navigate(`/veringresos`);
                 }, 800);
               })
-              .catch(error => {
-                console.log('Error al actualizar el producto:', error);
+              .catch((error) => {
+                console.log("Error al actualizar el producto:", error);
               });
           })
-          .catch(error => {
-            console.log('Error al obtener el producto:', error);
+          .catch((error) => {
+            console.log("Error al obtener el producto:", error);
           });
       })
-      .catch(error => {
-        console.log('Error al crear el ingreso:', error);
+      .catch((error) => {
+        console.log("Error al crear el ingreso:", error);
       });
   };
 
@@ -219,7 +218,7 @@ function CrearIngreso() {
                 label="Fecha de ingreso"
                 value={fecha}
                 onChange={(newValue) => handleFechaIngresoChange(newValue)}
-                renderInput={params => (
+                renderInput={(params) => (
                   <TextField
                     {...params}
                     label="Fecha"
@@ -248,10 +247,16 @@ function CrearIngreso() {
               fullWidth
               disableClearable
               options={productos}
-              getOptionLabel={option => (option.nombre ? option.nombre.toLowerCase() : '')}
-              value={nombreArticulo ? productos.find(p => p.nombre === nombreArticulo) : null}
+              getOptionLabel={(option) =>
+                option.nombre ? option.nombre.toLowerCase() : ""
+              }
+              value={
+                nombreArticulo
+                  ? productos.find((p) => p.nombre === nombreArticulo)
+                  : null
+              }
               onChange={handleNombreArticuloChange}
-              renderInput={params => (
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Nombre Artículo"
@@ -269,8 +274,8 @@ function CrearIngreso() {
               variant="outlined"
               margin="dense"
               inputProps={{
-                inputMode: 'numeric',
-                pattern: '[0-9]*'
+                inputMode: "numeric",
+                pattern: "[0-9]*",
               }}
             />
             <br />
@@ -282,8 +287,8 @@ function CrearIngreso() {
               variant="outlined"
               margin="dense"
               inputProps={{
-                inputMode: 'decimal',
-                pattern: '[0-9]*'
+                inputMode: "decimal",
+                pattern: "[0-9]*",
               }}
             />
             <br />
@@ -295,8 +300,8 @@ function CrearIngreso() {
               variant="outlined"
               margin="dense"
               inputProps={{
-                inputMode: 'decimal',
-                pattern: '[0-9]*'
+                inputMode: "decimal",
+                pattern: "[0-9]*",
               }}
             />
             <br />
@@ -326,22 +331,32 @@ function CrearIngreso() {
               variant="outlined"
               margin="dense"
             />
-            <br />            
+            <br />
           </form>
         </CardContent>
-        <CardActions style={{ justifyContent: 'center' }}>
+        <CardActions style={{ justifyContent: "center" }}>
           <Box sx={{ mx: 1 }}>
             <Button variant="contained" color="primary" onClick={handleGuardar}>
               Guardar
             </Button>
           </Box>
           <Box sx={{ mx: 0.25 }}>
-            <Button variant="contained" color="secondary" onClick={limpiarFormulario} margin="dense">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={limpiarFormulario}
+              margin="dense"
+            >
               Limpiar
             </Button>
           </Box>
           <Box sx={{ mx: 1 }}>
-            <Button variant="contained" color="error" component={Link} to="/veringresos">
+            <Button
+              variant="contained"
+              color="error"
+              component={Link}
+              to="/veringresos"
+            >
               Cancelar
             </Button>
           </Box>
@@ -355,7 +370,7 @@ function CrearIngreso() {
             elevation={6}
             variant="filled"
             onClose={handleSnackbarClose}
-            severity={mensajeError ? 'error' : 'success'}
+            severity={mensajeError ? "error" : "success"}
           >
             {mensaje}
           </MuiAlert>
