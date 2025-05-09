@@ -17,6 +17,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import { getCliente, updateCliente } from "./api/cliente/cliente";
 
 function ModificarCliente() {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ function ModificarCliente() {
   const [localidadesDialog, setLocalidadesDialog] = useState([]);
 
   const listaLocalidades = [
+    { value: "", label: "VACIO" },
     { value: "AVELLANEDA", label: "AVELLANEDA" },
     { value: "BERAZATEGUI", label: "BERAZATEGUI" },
     { value: "CRUCE VARELA", label: "CRUCE VARELA" },
@@ -52,14 +54,16 @@ function ModificarCliente() {
   ];
 
   useEffect(() => {
-    fetch(`https://vivosis.vercel.app/api/cliente/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchCliente = async () => {
+      try {
+        const data = await getCliente(id);
         setCliente(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error al cargar el cliente:", error);
-      });
+      }
+    };
+  
+    fetchCliente();
   }, [id]);
 
   useEffect(() => {
@@ -118,37 +122,32 @@ function ModificarCliente() {
     setEstado(event.target.value);
   };
 
-  const handleGuardar = () => {
-    setGuardarHabilitado(false);
-    const clienteModificado = {
-      ...cliente,
-      nombre,
-      telefono,
-      direccion,
-      localidad,
-      estado,
-      usuario,
-    };
-    fetch(`https://vivosis.vercel.app/api/cliente/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(clienteModificado),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setMensaje("El cliente ha sido actualizado");
-        setMostrarMensaje(true);
-
-        setTimeout(() => {
-          navigate(`/verclientes`);
-        }, 800);
-      })
-      .catch((error) => {
-        console.log("Error al modificar el cliente:", error);
-      });
+  
+const handleGuardar = () => {
+  setGuardarHabilitado(false);
+  const clienteModificado = {
+    ...cliente,
+    nombre,
+    telefono,
+    direccion,
+    localidad,
+    estado,
+    usuario,
   };
+
+  updateCliente(clienteModificado)
+    .then((data) => {
+      setMensaje("El cliente ha sido actualizado");
+      setMostrarMensaje(true);
+
+      setTimeout(() => {
+        navigate(`/verclientes`);
+      }, 800);
+    })
+    .catch((error) => {
+      console.log("Error al modificar el cliente:", error);
+    });
+};
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {

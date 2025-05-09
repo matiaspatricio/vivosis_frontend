@@ -12,6 +12,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
+import { getProducto, getProductos, updateProducto } from "./api/producto/producto";
+import { createIngreso } from "./api/ingreso/ingreso";
 
 function CrearIngreso() {
   const navigate = useNavigate();
@@ -30,9 +32,9 @@ function CrearIngreso() {
   const [selectedFechaIngreso, setSelectedFechaIngreso] = useState(null);
   const [mensajeError, setMensajeError] = useState(false);
 
+
   useEffect(() => {
-    fetch("https://vivosis.vercel.app/api/producto/getallproductos")
-      .then((response) => response.json())
+    getProductos()
       .then((data) => {
         setProductos(data);
       })
@@ -143,62 +145,38 @@ function CrearIngreso() {
       comentarios,
       usuario: usuario,
     };
-    fetch("https://vivosis.vercel.app/api/ingreso/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(nuevoIngreso),
-    })
-      .then((response) => response.json())
+  
+    createIngreso(nuevoIngreso)
       .then((data) => {
         setMensaje("¡Ingreso creado con éxito!");
         setMensajeError(false);
         setMostrarMensaje(true);
         limpiarFormulario();
-
-        // Actualizar el producto con el costo, precio y fecha de último ingreso
-        fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`, {
-          method: "GET",
-        })
-          .then((response) => response.json())
-          .then((producto) => {
-            const fechaIngreso = selectedFechaIngreso
-              ? selectedFechaIngreso.format("DD/MM/YYYY")
-              : "";
-            const costoUnitarioFloat = parseFloat(costoUnitario);
-            const precioVentaFloat = parseFloat(precioVenta);
-
-            // Actualizar los campos del producto
-            producto.stock = producto.stock + parseInt(cantidad);
-            producto.costo = costoUnitarioFloat;
-            producto.precio = precioVentaFloat;
-            producto.fecha_costo = fechaIngreso;
-
-            // Enviar la solicitud para actualizar el producto
-            fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(producto),
-            })
-              .then((response) => response.json())
-              .then((updatedProducto) => {
-                setTimeout(() => {
-                  navigate(`/veringresos`);
-                }, 800);
-              })
-              .catch((error) => {
-                console.log("Error al actualizar el producto:", error);
-              });
-          })
-          .catch((error) => {
-            console.log("Error al obtener el producto:", error);
-          });
+  
+        return getProducto(idArticulo);
+      })
+      .then((producto) => {
+        const fechaIngreso = selectedFechaIngreso
+          ? selectedFechaIngreso.format("DD/MM/YYYY")
+          : "";
+        const costoUnitarioFloat = parseFloat(costoUnitario);
+        const precioVentaFloat = parseFloat(precioVenta);
+  
+        // Actualizar los campos del producto
+        producto.stock = producto.stock + parseInt(cantidad);
+        producto.costo = costoUnitarioFloat;
+        producto.precio = precioVentaFloat;
+        producto.fecha_costo = fechaIngreso;
+  
+        return updateProducto(producto);
+      })
+      .then((updatedProducto) => {
+        setTimeout(() => {
+          navigate(`/veringresos`);
+        }, 800);
       })
       .catch((error) => {
-        console.log("Error al crear el ingreso:", error);
+        console.log("Error:", error);
       });
   };
 
@@ -228,7 +206,7 @@ function CrearIngreso() {
                 )}
                 inputFormat="DD-MM-YYYY"
                 renderDay={(day, _value, DayComponentProps) => (
-                  <DayComponentProps.button {...DayComponentProps} />
+                  <DayComponentProps.Button {...DayComponentProps} />
                 )}
               />
             </LocalizationProvider>

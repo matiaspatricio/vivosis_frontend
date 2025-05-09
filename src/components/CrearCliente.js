@@ -9,9 +9,11 @@ import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { createCliente } from "./api/cliente/cliente";
 
 function CrearCliente() {
   const listaLocalidades = [
+    { value: "", label: "VACIO" },
     { value: "AVELLANEDA", label: "AVELLANEDA" },
     { value: "BERAZATEGUI", label: "BERAZATEGUI" },
     { value: "CRUCE VARELA", label: "CRUCE VARELA" },
@@ -81,26 +83,19 @@ function CrearCliente() {
       estado,
       usuario,
     };
-    fetch("https://vivosis.vercel.app/api/cliente/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(nuevoCliente),
+    createCliente(nuevoCliente)
+    .then((data) => {
+      setMensaje("¡Cliente creado con éxito!");
+      setMensajeError(false);
+      setMostrarMensaje(true);
+      limpiarFormulario();
+      setTimeout(() => {
+        navigate(`/verclientes`);
+      }, 800);
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setMensaje("¡Cliente creado con éxito!");
-        setMensajeError(false);
-        setMostrarMensaje(true);
-        limpiarFormulario();
-        setTimeout(() => {
-          navigate(`/verclientes`);
-        }, 800);
-      })
-      .catch((error) => {
-        console.log("Error al crear el cliente:", error);
-      });
+    .catch((error) => {
+      console.log("Error al crear el cliente:", error);
+    });
   };
 
   const handleSnackbarClose = (event, reason) => {

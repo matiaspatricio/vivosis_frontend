@@ -28,6 +28,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Checkbox from "@mui/material/Checkbox";
+import { deleteProducto, getProducto, updateProducto } from "./api/producto/producto";
 
 const useStyles = makeStyles({
   card: {
@@ -174,30 +175,14 @@ function VerPedidosHistorico() {
     setFilterNombreArticuloOptions(nombreArticuloOptions);
   }, [pedidos]);
 
-  const actualizarStockProducto = (productId, quantity) => {
-    fetch(`https://vivosis.vercel.app/api/producto/${productId}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((producto) => {
-        producto.stock += quantity;
-
-        fetch(`https://vivosis.vercel.app/api/producto/${productId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(producto),
-        })
-          .then((response) => response.json())
-          .then((data) => {})
-          .catch((error) => {
-            console.log("Error al actualizar el stock del producto:", error);
-          });
-      })
-      .catch((error) => {
-        console.log("Error al obtener el producto:", error);
-      });
+  const actualizarStockProducto = async (productId, quantity) => {
+    try {
+      const producto = await getProducto(productId);
+      producto.stock += quantity;
+      await updateProducto(producto);
+    } catch (error) {
+      console.log("Error al actualizar el stock del producto:", error);
+    }
   };
 
   const confirmActMasiva = async () => {
@@ -317,18 +302,15 @@ function VerPedidosHistorico() {
       pedidoAEliminar.id_articulo,
       pedidoAEliminar.cantidad
     );
-    fetch(`https://vivosis.vercel.app/api/pedido/${selectedPedido}`, {
-      method: "DELETE",
+    deleteProducto(selectedPedido)
+    .then((data) => {
+      setRefreshCount((prevCount) => prevCount + 1);
+      setSnackbarOpen(true);
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setRefreshCount((prevCount) => prevCount + 1);
-        setSnackbarOpen(true);
-      })
-      .catch((error) => {
-        console.log("Error al eliminar el pedido:", error);
-      });
-  };
+    .catch((error) => {
+      console.log("Error al eliminar el pedido:", error);
+    });
+};
 
   const handleEdit = (id) => {
     navigate(`/ModificarPedido/${id}`);

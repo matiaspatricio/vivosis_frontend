@@ -9,6 +9,8 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { getCategorias } from "./api/categoria/categoria";
+import { createProducto } from "./api/producto/producto";
 
 function CrearProducto() {
   const navigate = useNavigate();
@@ -27,14 +29,16 @@ function CrearProducto() {
   const [mensajeError, setMensajeError] = useState(false);
 
   useEffect(() => {
-    fetch("https://vivosis.vercel.app/api/categoria/getallcategorias")
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchCategorias = async () => {
+      try {
+        const data = await getCategorias();
         setCategorias(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error al obtener las categorías:", error);
-      });
+      }
+    };
+
+    fetchCategorias();
   }, []);
 
   const handleNombreChange = (event) => {
@@ -90,7 +94,6 @@ function CrearProducto() {
     setMostrarMensaje(false);
     setMensajeError(false);
   };
-
   const handleGuardar = () => {
     // Verificar si el nombre, la categoría y la subcategoría están presentes
     if (!nombre.trim() || !categoria || !subcategoria) {
@@ -99,7 +102,7 @@ function CrearProducto() {
       setMostrarMensaje(true);
       return;
     }
-
+  
     // Obtener los nombres de la categoría y subcategoría seleccionadas
     const categoriaSeleccionada = categorias.find((c) => c._id === categoria);
     const subcategoriaSeleccionada = subcategorias.find(
@@ -111,7 +114,7 @@ function CrearProducto() {
     const nombreSubcategoria = subcategoriaSeleccionada
       ? subcategoriaSeleccionada.nombre
       : "";
-
+  
     const nuevoProducto = {
       nombre,
       categoria: nombreCategoria,
@@ -122,14 +125,8 @@ function CrearProducto() {
       comentarios,
       usuario,
     };
-    fetch("https://vivosis.vercel.app/api/producto/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(nuevoProducto),
-    })
-      .then((response) => response.json())
+  
+    createProducto(nuevoProducto)
       .then((data) => {
         setMensaje("¡Producto creado con éxito!");
         setMensajeError(false);
@@ -143,7 +140,6 @@ function CrearProducto() {
         console.log("Error al crear el producto:", error);
       });
   };
-
   return (
     <Box
       display="flex"

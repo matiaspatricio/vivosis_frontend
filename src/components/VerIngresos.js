@@ -19,6 +19,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import { Box } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
+import { deleteIngreso, getIngresos } from "./api/ingreso/ingreso";
 
 const useStyles = makeStyles({
   root: {
@@ -51,20 +52,22 @@ function VerIngresos() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    fetch("https://vivosis.vercel.app/api/ingreso/getallingresos")
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchIngresos = async () => {
+      try {
+        const data = await getIngresos();
         const ingresosConId = data.map((ingreso) => ({
           id: ingreso._id,
           ...ingreso,
         }));
         setIngresos(ingresosConId);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error al cargar los ingresos:", error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchIngresos();
   }, [refreshCount]);
 
   const handleSnackbarClose = () => {
@@ -80,18 +83,16 @@ function VerIngresos() {
 
   const confirmDelete = () => {
     setConfirmDialogOpen(false);
-    fetch(`https://vivosis.vercel.app/api/ingreso/${selectedIngreso}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
+    deleteIngreso(selectedIngreso)
       .then((data) => {
         setRefreshCount((prevCount) => prevCount + 1); // Incrementar el contador para forzar la actualización de la grilla
         setSnackbarOpen(true);
       })
       .catch((error) => {
-        console.log("Error al eliminar el cliente:", error);
+        console.log("Error al eliminar el ingreso:", error);
       });
   };
+  
   const handleDelete = (id) => {
     setSelectedIngreso(id);
     setConfirmDialogOpen(true);

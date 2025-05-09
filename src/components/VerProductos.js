@@ -18,6 +18,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { Box } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
+import { deleteProducto, getProductos } from "./api/producto/producto";
 
 const useStyles = makeStyles({
   root: {
@@ -51,9 +52,9 @@ function VerProductos() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    fetch("https://vivosis.vercel.app/api/producto/getallproductos")
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchProductos = async () => {
+      try {
+        const data = await getProductos();
         const productosConId = data.map((producto) => ({
           id: producto._id,
           ...producto,
@@ -61,11 +62,13 @@ function VerProductos() {
 
         setProductos(productosConId);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error al cargar los productos:", error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchProductos();
   }, [refreshCount]);
 
   const handleEdit = (id) => {
@@ -76,13 +79,12 @@ function VerProductos() {
 
   const confirmDelete = (id) => {
     setConfirmDialogOpen(false);
-    fetch(`https://vivosis.vercel.app/api/producto/${selectedProduct}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
+
+    deleteProducto(id)
       .then((data) => {
         setRefreshCount((prevCount) => prevCount + 1); // Incrementar el contador para forzar la actualización de la grilla
         setSnackbarOpen(true);
+        console.log("Producto eliminado correctamente:", data);
       })
       .catch((error) => {
         console.log("Error al eliminar el producto:", error);
@@ -93,7 +95,6 @@ function VerProductos() {
     setSelectedProduct(id);
     setConfirmDialogOpen(true);
   };
-
   const handleSearch = (event) => {
     setSearchText(event.target.value);
   };
@@ -101,7 +102,6 @@ function VerProductos() {
   const handleCancelDelete = () => {
     setConfirmDialogOpen(false);
   };
-
   const filteredProductos = productos.filter(
     (producto) =>
       producto &&

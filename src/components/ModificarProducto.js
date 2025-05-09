@@ -16,6 +16,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import MenuItem from "@mui/material/MenuItem";
+import { getProducto, updateProducto } from "./api/producto/producto";
+import { getCategorias } from "./api/categoria/categoria";
 
 function ModificarProducto() {
   const navigate = useNavigate();
@@ -42,22 +44,26 @@ function ModificarProducto() {
   const [guardarHabilitado, setGuardarHabilitado] = useState(true);
 
   useEffect(() => {
-    fetch(`https://vivosis.vercel.app/api/producto/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchProducto = async () => {
+      try {
+        const data = await getProducto(id);
         setProducto(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error al cargar el producto:", error);
-      });
-    fetch("https://vivosis.vercel.app/api/categoria/getallcategorias")
-      .then((response) => response.json())
-      .then((data) => {
+      }
+    };
+
+    const fetchCategorias = async () => {
+      try {
+        const data = await getCategorias();
         setCategoriasDialog(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error al obtener las categorías:", error);
-      });
+      }
+    };
+
+    fetchProducto();
+    fetchCategorias();
   }, [id]);
 
   useEffect(() => {
@@ -102,7 +108,6 @@ function ModificarProducto() {
   const handleEstadoChange = (event) => {
     setEstado(event.target.value);
   };
-
   const handleGuardar = () => {
     setGuardarHabilitado(false);
     const productoModificado = {
@@ -117,16 +122,8 @@ function ModificarProducto() {
       estado,
       usuario,
     };
-    console.log("productoModificado", productoModificado);
-    fetch(`https://vivosis.vercel.app/api/producto/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      
-      body: JSON.stringify(productoModificado),
-    })
-      .then((response) => response.json())
+
+    updateProducto(productoModificado)
       .then((data) => {
         setMensaje("El producto ha sido actualizado");
         setMostrarMensaje(true);
@@ -138,7 +135,6 @@ function ModificarProducto() {
         console.log("Error al modificar el producto:", error);
       });
   };
-
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -279,7 +275,7 @@ function ModificarProducto() {
                 <MenuItem value="BLOQUEADO">BLOQUEADO</MenuItem>
               </Select>
             </FormControl>
-            
+
             <br />
           </form>
         </CardContent>

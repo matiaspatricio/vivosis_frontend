@@ -21,6 +21,11 @@ import DialogActions from "@mui/material/DialogActions";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Autocomplete } from "@mui/material";
+import { actualizarPedido, getPedido } from "./api/pedido/pedido";
+import {
+  actualizarStockProducto,
+  updateProducto,
+} from "./api/producto/producto";
 
 function ModificarPedido() {
   const listaEstadosPedido = [
@@ -59,14 +64,16 @@ function ModificarPedido() {
   const [tipoEstado, setTipoEstado] = useState("");
 
   useEffect(() => {
-    fetch(`https://vivosis.vercel.app/api/pedido/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
+    const cargarPedido = async () => {
+      try {
+        const data = await getPedido(id);
         setPedido(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error al cargar el pedido:", error);
-      });
+      }
+    };
+
+    cargarPedido();
   }, [id]);
 
   useEffect(() => {
@@ -158,34 +165,19 @@ function ModificarPedido() {
     setFechaEntrega(newValue);
   };
 
-  const actualizarStock = (cantidadOriginal, nuevaCantidad) => {
-    fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`)
-      .then((response) => response.json())
-      .then((producto) => {
-        producto.stock += cantidadOriginal;
-        producto.stock -= nuevaCantidad;
-        guardarCambiosEnProducto(producto);
-      })
-      .catch((error) => {
-        console.log("Error al obtener el producto:", error);
-      });
-  };
-
-  const guardarCambiosEnProducto = (producto) => {
-    fetch(`https://vivosis.vercel.app/api/producto/${producto._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(producto),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Stock del producto actualizado:", data);
-      })
-      .catch((error) => {
-        console.log("Error al actualizar el stock del producto:", error);
-      });
+  const actualizarStock = async (
+    cantidadOriginal,
+    nuevaCantidad,
+    idArticulo
+  ) => {
+    try {
+      const producto = await actualizarStockProducto(idArticulo);
+      producto.stock += cantidadOriginal;
+      producto.stock -= nuevaCantidad;
+      await updateProducto(producto);
+    } catch (error) {
+      console.log("Error al actualizar el stock:", error);
+    }
   };
 
   const handleDialogOpen = (tipoEstado) => {
@@ -219,14 +211,8 @@ function ModificarPedido() {
     };
 
     const cantidadOriginal = pedido.cantidad;
-    fetch(`https://vivosis.vercel.app/api/pedido/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(pedidoModificado),
-    })
-      .then((response) => response.json())
+
+    actualizarPedido(id, pedidoModificado)
       .then((data) => {
         setMensaje("El pedido ha sido actualizado");
         setMostrarMensaje(true);

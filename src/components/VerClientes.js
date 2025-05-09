@@ -18,6 +18,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { Box } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
+import { deleteCliente, getAllClientes } from "./api/cliente/cliente";
 
 const useStyles = makeStyles({
   root: {
@@ -59,20 +60,22 @@ function VerClientes() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    fetch("https://vivosis.vercel.app/api/cliente/getallclientes")
-      .then((response) => response.json())
-      .then((data) => {
-        const clientesConId = data.map((cliente) => ({
+    const fetchClientes = async () => {
+      try {
+        const response = await getAllClientes();
+        const clientesConId = response.map((cliente) => ({
           id: cliente._id,
           ...cliente,
         }));
         setClientes(clientesConId);
         setLoading(false);
-      })
-      .catch((error) => {
-        console.log("Error al cargar los clientess:", error);
+      } catch (error) {
+        console.log("Error al cargar los clientes:", error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchClientes();
   }, [refreshCount]);
 
   const handleEdit = (id) => {
@@ -87,10 +90,8 @@ function VerClientes() {
 
   const confirmDelete = () => {
     setConfirmDialogOpen(false);
-    fetch(`https://vivosis.vercel.app/api/cliente/${selectedClient}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
+
+    deleteCliente(selectedClient)
       .then((data) => {
         setRefreshCount((prevCount) => prevCount + 1);
         setSnackbarOpen(true);

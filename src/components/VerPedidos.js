@@ -23,11 +23,16 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box, Grid, Card } from "@mui/material";
 import { utcToZonedTime } from "date-fns-tz";
 import { format as formatDate, set } from "date-fns";
-import { actualizarPedido, getPedidosPendientes } from "./api/pedido/pedido";
+import {
+  actualizarPedido,
+  deletePedido,
+  getPedidosPendientes,
+} from "./api/pedido/pedido";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Checkbox from "@mui/material/Checkbox";
+import { getProducto, updateProducto } from "./api/producto/producto";
 
 const useStyles = makeStyles({
   card: {
@@ -64,6 +69,12 @@ const useStyles = makeStyles({
     },
     "& .valorDiferente": {
       backgroundColor: "#FFF9C4",
+    },
+    "& .clienteBloqueado": {
+      backgroundColor: "#FFCDD2",
+    },
+    "& .clienteInactivo": {
+      backgroundColor: "#B3E5FC",
     },
     "& .MuiButton-root": {
       marginLeft: "5px",
@@ -176,32 +187,15 @@ function VerPedidos() {
     setFilterNombreArticuloOptions(nombreArticuloOptions);
   }, [pedidos]);
 
-  const actualizarStockProducto = (productId, quantity) => {
-    fetch(`https://vivosis.vercel.app/api/producto/${productId}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((producto) => {
-        producto.stock += quantity;
-
-        fetch(`https://vivosis.vercel.app/api/producto/${productId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(producto),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            //console.log('Stock del producto actualizado::', data);
-          })
-          .catch((error) => {
-            console.log("Error al actualizar el stock del producto:", error);
-          });
-      })
-      .catch((error) => {
-        console.log("Error al obtener el producto:", error);
-      });
+  const actualizarStockProducto = async (productId, quantity) => {
+    try {
+      const producto = await getProducto(productId);
+      producto.stock += quantity;
+      await updateProducto(producto);
+      //console.log('Stock del producto actualizado:', data);
+    } catch (error) {
+      console.log("Error al actualizar el stock del producto:", error);
+    }
   };
 
   const confirmActMasiva = async () => {
@@ -242,6 +236,7 @@ function VerPedidos() {
         try {
           const result = await actualizarPedido(pedido);
           setRefreshCount((prevCount) => prevCount + 1);
+          setFilterLocalidadDialog("");
         } catch (error) {
           console.log("Error al actualizar el pedido:", error);
         }
@@ -256,6 +251,7 @@ function VerPedidos() {
         try {
           const result = await actualizarPedido(pedido);
           setRefreshCount((prevCount) => prevCount + 1);
+          setFilterEstadoPagoDialog([]);
         } catch (error) {
           console.log("Error al actualizar el pedido:", error);
         }
@@ -269,6 +265,7 @@ function VerPedidos() {
         try {
           const result = await actualizarPedido(pedido);
           setRefreshCount((prevCount) => prevCount + 1);
+          setSelectedFechaEntrega(null);
         } catch (error) {
           console.log("Error al actualizar el pedido:", error);
         }
@@ -283,6 +280,7 @@ function VerPedidos() {
         try {
           const result = await actualizarPedido(pedido);
           setRefreshCount((prevCount) => prevCount + 1);
+          setFilterEstadoPedidoDialog([]);
         } catch (error) {
           console.log("Error al actualizar el pedido:", error);
         }
@@ -320,10 +318,7 @@ function VerPedidos() {
       pedidoAEliminar.id_articulo,
       pedidoAEliminar.cantidad
     );
-    fetch(`https://vivosis.vercel.app/api/pedido/${selectedPedido}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
+    deletePedido(selectedPedido)
       .then((data) => {
         setRefreshCount((prevCount) => prevCount + 1);
         setSnackbarOpen(true);
@@ -458,7 +453,7 @@ function VerPedidos() {
       manageable: false,
     },
     { field: "fecha", headerName: "Fecha", flex: 1, type: "Date" },
-    { field: "nombre_cliente", headerName: "Cliente", flex: 1.2 },
+    { field: "nombre_cliente", headerName: "Cliente", flex: 1.2, },
     { field: "localidad", headerName: "Localidad", flex: 0.8 },
     { field: "nombre_articulo", headerName: "Artículo", flex: 1.5 },
     {
@@ -487,7 +482,7 @@ function VerPedidos() {
       flex: 1,
       valueGetter: (params) => params.row.comentarios,
       cellClassName: (params) => {
-        return params.value !== '' ? "valorDiferente" : "";
+        return params.value !== "" ? "valorDiferente" : "";
       },
     },
     { field: "usuario", headerName: "Usuario", flex: 0.5 },

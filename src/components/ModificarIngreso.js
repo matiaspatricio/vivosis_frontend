@@ -9,6 +9,8 @@ import Box from "@mui/material/Box";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import { getProducto, getProductos, updateProducto } from "./api/producto/producto";
+import { getIngreso, updateIngreso } from "./api/ingreso/ingreso";
 
 function ModificarIngreso() {
   const navigate = useNavigate();
@@ -30,8 +32,7 @@ function ModificarIngreso() {
   const [guardarHabilitado, setGuardarHabilitado] = useState(true);
 
   useEffect(() => {
-    fetch(`https://vivosis.vercel.app/api/ingreso/${id}`)
-      .then((response) => response.json())
+    getIngreso(id)
       .then((data) => {
         setIngreso(data);
       })
@@ -53,14 +54,16 @@ function ModificarIngreso() {
   }, [ingreso]);
 
   useEffect(() => {
-    fetch("https://vivosis.vercel.app/api/producto/getallproductos")
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchProductos = async () => {
+      try {
+        const data = await getProductos();
         setProductos(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error al obtener los productos:", error);
-      });
+      }
+    };
+  
+    fetchProductos();
   }, []);
 
   const calcularTotal = () => {
@@ -110,9 +113,9 @@ function ModificarIngreso() {
 
   const handleGuardar = () => {
     setGuardarHabilitado(false);
-
+  
     const diferenciaCantidad = cantidad - cantidadOriginal;
-
+  
     const ingresoModificado = {
       ...ingreso,
       fecha,
@@ -125,56 +128,33 @@ function ModificarIngreso() {
       usuario,
       stock: cantidad,
     };
-
-    fetch(`https://vivosis.vercel.app/api/ingreso/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(ingresoModificado),
-    })
-      .then((response) => response.json())
+  
+    updateIngreso(ingresoModificado)
       .then((data) => {
         setMensaje("El ingreso ha sido actualizado");
         setMostrarMensaje(true);
-
-        fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`, {
-          method: "GET",
-        })
-          .then((response) => response.json())
-          .then((producto) => {
-            const fechaIngreso = fecha ? fecha : "";
-            const costoUnitarioFloat = parseFloat(costoUnitario);
-            const precioVentaFloat = parseFloat(precioVenta);
-
-            producto.stock = producto.stock + diferenciaCantidad;
-            producto.costo = costoUnitarioFloat;
-            producto.precio = precioVentaFloat;
-            producto.fecha_costo = fechaIngreso;
-
-            fetch(`https://vivosis.vercel.app/api/producto/${idArticulo}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(producto),
-            })
-              .then((response) => response.json())
-              .then((updatedProducto) => {
-                setTimeout(() => {
-                  navigate(`/veringresos`);
-                }, 800);
-              })
-              .catch((error) => {
-                console.log("Error al actualizar el producto:", error);
-              });
-          })
-          .catch((error) => {
-            console.log("Error al obtener el producto:", error);
-          });
+  
+        return getProducto(idArticulo);
+      })
+      .then((producto) => {
+        const fechaIngreso = fecha ? fecha : "";
+        const costoUnitarioFloat = parseFloat(costoUnitario);
+        const precioVentaFloat = parseFloat(precioVenta);
+  
+        producto.stock = producto.stock + diferenciaCantidad;
+        producto.costo = costoUnitarioFloat;
+        producto.precio = precioVentaFloat;
+        producto.fecha_costo = fechaIngreso;
+  
+        return updateProducto(producto);
+      })
+      .then((updatedProducto) => {
+        setTimeout(() => {
+          navigate(`/veringresos`);
+        }, 800);
       })
       .catch((error) => {
-        console.log("Error al crear el ingreso:", error);
+        console.log("Error:", error);
       });
   };
 

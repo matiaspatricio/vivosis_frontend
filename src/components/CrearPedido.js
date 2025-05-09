@@ -17,6 +17,9 @@ import { format, compareAsc } from "date-fns";
 import utcToZonedTime from "date-fns-tz/utcToZonedTime";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@mui/styles";
+import { getAllClientes } from "./api/cliente/cliente";
+import { getProducto, getProductos } from "./api/producto/producto";
+import { createPedido } from "./api/pedido/pedido";
 
 const useStyles = makeStyles((theme) => ({
   blocked: {
@@ -69,9 +72,9 @@ function CrearPedido() {
   ];
 
   useEffect(() => {
-    fetch("https://vivosis.vercel.app/api/cliente/getallclientes")
-      .then((response) => response.json())
+    getAllClientes()
       .then((data) => {
+        console.log("Clientes:", data);
         const sortedClientes = data.sort((a, b) =>
           a.nombre.localeCompare(b.nombre)
         );
@@ -81,8 +84,7 @@ function CrearPedido() {
         console.log("Error al obtener los clientes:", error);
       });
 
-    fetch("https://vivosis.vercel.app/api/producto/getallproductos")
-      .then((response) => response.json())
+    getProductos()
       .then((data) => {
         setArticulos(data);
       })
@@ -97,8 +99,7 @@ function CrearPedido() {
   }, [cantidad, precio]);
 
   const fetchPrecioProducto = (productId) => {
-    fetch(`https://vivosis.vercel.app/api/producto/${productId}`)
-      .then((response) => response.json())
+    getProducto(productId)
       .then((data) => {
         setPrecio(data.precio);
         setCosto(data.costo);
@@ -107,6 +108,7 @@ function CrearPedido() {
         console.log("Error al obtener el precio del producto:", error);
       });
   };
+
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -182,11 +184,9 @@ function CrearPedido() {
   };
 
   const filterOptions = (options, { inputValue }) => {
-    console.log("options:", options);
-    const filteredOptions = options.filter(option =>
+    const filteredOptions = options.filter((option) =>
       option.nombre.toLowerCase().includes(inputValue.toLowerCase())
     );
-    console.log('Filtered Options:', filteredOptions);
     return filteredOptions;
   };
 
@@ -216,30 +216,16 @@ function CrearPedido() {
   };
 
   const actualizarStockProducto = (productId, quantity) => {
-    fetch(`https://vivosis.vercel.app/api/producto/${productId}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
+    getProducto(productId)
       .then((producto) => {
         producto.stock -= quantity;
-
-        fetch(`https://vivosis.vercel.app/api/producto/${productId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(producto),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Stock del producto actualizado:", data);
-          })
-          .catch((error) => {
-            console.log("Error al actualizar el stock del producto:", error);
-          });
+        return actualizarStockProducto(productId, producto.stock);
+      })
+      .then((data) => {
+        console.log("Stock del producto actualizado:", data);
       })
       .catch((error) => {
-        console.log("Error al obtener el producto:", error);
+        console.log("Error al actualizar el stock del producto:", error);
       });
   };
 
@@ -278,14 +264,7 @@ function CrearPedido() {
       localidad: valorLocalidad, // Usar valorLocalidad en lugar de localidad
     };
 
-    fetch("https://vivosis.vercel.app/api/pedido/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(nuevoPedido),
-    })
-      .then((response) => response.json())
+    createPedido(nuevoPedido)
       .then((data) => {
         setMensaje("¡Pedido creado con éxito!");
         setMensajeError(false);
