@@ -446,7 +446,8 @@ Opción 2: se deja abonado el pedido para reservarlo y mantener el precio hasta 
     );
     //setMensaje("");
     //setMensaje
-    const mensajeWsp = `Hola 😁👋🏻 Soy Narela del vivo de maquillajes 😊, te dejo tu total *(El total del pedido esta en "leer mas" abajo de todo)* :
+    const mensajeWsp = `✨Te dejo tu TOTAL y el alias para abonar es Narelamakeup  (sale a nombre de Narela Aldana Gimenez)
+ *ATENCIÓN: (El total del pedido esta en "leer mas" abajo de todo)* :
 
   Detalle de tu pedido:
     Cliente: ${pedidosCliente[0].nombre_cliente}
